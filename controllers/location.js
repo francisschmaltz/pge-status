@@ -26,19 +26,19 @@ exports.search = (req, res) => {
 
 
   request(options, (error, response, body) => {
-    console.log(response);
       if (body && response.statusCode == 200) {
         let rawData = JSON.parse(body)
         let results = rawData.results
 
-        console.log(body);
-
 
         res.render('pages/search', {data: results});
       } else {
-        console.log('Error' + error);
+        let rawData = JSON.parse(body)
+        let results = rawData.fault.detail.message || 'Unknown PG&E Server Error'
+        console.log('Error');
         console.log(error);
-        res.redirect('/403');
+        
+        res.render('pages/search', {error: results});
       }
   });
 
