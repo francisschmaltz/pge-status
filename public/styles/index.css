@@ -125,7 +125,7 @@ a {
 .search-card p {
 	font-weight: 500 !important;
 }
-/* 2B3750 */
+/*  */
 
 
 @media (prefers-color-scheme: dark) {
@@ -139,32 +139,13 @@ a {
   input::-webkit-input-placeholder {
     color: #aaabac !important;
   }
-  .box, input, table {
-    color: #eaebec !important;
-    background-color: #0e121b !important;
-    border: 1px solid #2b3750 !important;
-  }
-  .box-header {
-    background-color: #0e121b;
-    border-color: #2b3750;
-  }
-  table thead tr td {
-    color: #fafcfe !important;
-  }
-  .table.is-striped tbody tr:not(.is-selected):nth-child(2n) {
-    background-color: #1d232e;
-  }
-  .table td {
-    border: 1px solid #2b3750;
-  }
-  .input:focus{
-    border-color: #0d97ff !important;
-    box-shadow: 0 0 12px -1px #3445c2 !important;
-  }
-  .icon-chevronrightcircle {
-    color: #eaebec;
-  }
-  #seperator {
-    background-color: #2b3750
-  }
+
+	.search-card {
+		color: #eaebec;
+		background-color: #0e121b;
+		border-color: #2B3750;
+	}
+	.search-card:hover {
+		background-color: #1e222b;
+	}
 }
