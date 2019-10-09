@@ -16,14 +16,24 @@
           <h2 class="typography-intro">Select an address below for outage details.</h2>
           <br>
           <br>
-          <% for (let r = 0; r < data.length; r++) { %>
-            <a class="search-card" href="/details/?loc=<%- data[r].prem_id %>">
-              <p class="typography-body">
-                <%- data[r].street %><% if(data[r].subpremise){ %>, <%- data[r].subpremise %><% } %><br>
-                <%- data[r].city %>, <%- data[r].state %> <%- data[r].zip %>
-              </p>
-            </a>
-          <% } %>
+          <% if(typeof data !== 'undefined' && data.length > 0){ %>
+            <% for (let r = 0; r < data.length; r++) { %>
+              <a class="search-card" href="/details/?loc=<%- data[r].prem_id %>">
+                <p class="typography-body">
+                  <%- data[r].street %><% if(data[r].subpremise){ %>, <%- data[r].subpremise %><% } %><br>
+                  <%- data[r].city %>, <%- data[r].state %> <%- data[r].zip %>
+                </p>
+              </a>
+            <% } %>
+          <% } else {%>
+            <div class="row">
+              <h3 class="typography-section-headline">No Results Found</h3>
+              <p>PG&E Returned no Addresses on this search. You can try refreshing the page to try again, or <a href="/">search something else</a>.</p>
+              <br>
+              <br>
+              <p>Always check the <a href="http://m.pge.com/#event-map">offical PG&E Outage Map</a> (if it is avialable) for offical details</p>
+            </div>
+          <% }%>
         </div>
         <div class="column large-8 medium-10 small-12 large-centered medium-centered">
           <br>
