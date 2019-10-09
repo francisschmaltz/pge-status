@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#" class="no-js">
+<head>
+  <% include ../partials/head %>
+  <link rel="stylesheet" href="/styles/index.css">
+</head>
+<body>
+  <main>
+    <section class="section-hero">
+      <div class="section-content">
+        <div class="row">
+          <div class="column large-8 medium-10 small-12 large-centered medium-centered">
+            <div class="hero-title">
+              <h1 class="typography-title-elevated hero-text">PG&E Status</h1>
+              <h2 class="typography-title-reduced hero-subtitle">Search for Current Outages</h2>
+            </div>
+            <br>
+            <div class="hero-intro">
+              <form action="/search/" method="get">
+                <div class="row auth-row">
+              	   <input class="text" type="text" name="loc" placeholder="Address..."/>
+                   <input class="button" type="submit" value="Search Address"/>
+                 </div>
+              </form>
+              <br>
+              <br>
+              <br>
+              <p class="typograph-intro intro-copy">
+                 This site uses PG&E's backend system to search and display outages. Results are cached for a few minutes. To view the latest info visit the <a href="http://m.pge.com/#event-map">PG&E Outage Map</a>.
+               </p>
+               <p class="typograph-intro intro-copy">
+                 <br>
+                 As PG&E's site is very unreliable, this site might also be affected. Cloudflare caching is used to try to prevent this, but if PG&E's backend system fails, this site will as well.
+              </p>
+              <br>
+              <p class="typograph-intro intro-copy">
+                View a collection of my previous work projects below.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="star-container-title">
+				<div class="star1 star"></div>
+				<div class="star2 star"></div>
+				<div class="star3 star"></div>
+			</div>
+    </section>
+    <section id="projectsList" class="section-projects">
+    </section>
+  </main>
+  <% include ../partials/footer %>
+  </body>
+
+
+</html>

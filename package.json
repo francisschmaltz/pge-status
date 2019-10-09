@@ -1,0 +1,17 @@
+{
+  "name": "pge-outage-check",
+  "version": "1.0.0",
+  "description": "Checks if address is affected by PG&E  outage",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Francis Schmaltz <francis@yaboiii.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "request": "^2.88.0"
+  }
+}

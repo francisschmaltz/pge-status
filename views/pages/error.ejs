@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#" class="no-js">
+<head>
+    <% include ../partials/head %>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+<body class="theme-dark">
+  <main>
+    <% include ../partials/nav %>
+    <section class="section-error">
+      <div class="section-content">
+        <div class="row">
+          <div class="column large-12 small-12">
+            <br>
+            <h1 class="typography-title"><%= errorCode %>: <%= errorStatus %></h1>
+            <br>
+            <h2 class="typography-label"><%= errorMessage %></h2>
+            <p>If you keep reaching this page, maybe shoot me an email so I can see what's up.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <% include ../partials/footer %>
+  </body>
+</html>
