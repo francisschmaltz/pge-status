@@ -36,8 +36,9 @@ exports.search = (req, res) => {
         let rawData = JSON.parse(body)
         let results = rawData.fault.detail.message || 'Unknown PG&E Server Error'
         console.log('Error');
+        console.log(results);
         console.log(error);
-        
+
         res.render('pages/search', {error: results});
       }
   });
