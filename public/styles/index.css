@@ -136,6 +136,10 @@ a {
   h1,h2,h3,h4, label {
     color: #eaebec !important;
   }
+	input {
+		color: #eaebec !important;
+    background-color: #0e121b !important;
+	}
   input::-webkit-input-placeholder {
     color: #aaabac !important;
   }

@@ -16,29 +16,56 @@
           <h2 class="typography-intro">Select an address below for outage details.</h2>
           <br>
           <br>
+          <div class="row auth-row">
+            <input class="text" type="text" id="filterInput" onkeyup="filter()" placeholder="Filter Addresses..."/>
+          </div>
+          <br>
+          <script>
+            const filter = () => {
+              // Declare variables
+              let input, filter, list, result, p, txtValue;
+              input = document.getElementById('filterInput');
+              filter = input.value.toUpperCase();
+              list = document.getElementById('resultsList');
+              result = list.getElementsByTagName('a');
+
+              // Loop through all list items, and hide those who don't match the search query
+              for (i = 0; i < result.length; i++) {
+                p = result[i].getElementsByTagName('p')[0];
+                txtValue = p.textContent || p.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  result[i].style.display = '';
+                } else {
+                  result[i].style.display = 'none';
+                }
+              }
+            }
+          </script>
           <% if(typeof data !== 'undefined' && data.length > 0){ %>
-            <% for (let r = 0; r < data.length; r++) { %>
-              <a class="search-card" href="/details/?loc=<%- data[r].prem_id %>">
-                <p class="typography-body">
-                  <%- data[r].street %><% if(data[r].subpremise){ %>, <%- data[r].subpremise %><% } %><br>
-                  <%- data[r].city %>, <%- data[r].state %> <%- data[r].zip %>
-                </p>
-              </a>
-            <% } %>
+            <div id="resultsList">
+              <% for (let r = 0; r < data.length; r++) { %>
+                <a class="search-card" href="/details/?loc=<%- data[r].prem_id %>">
+                  <p class="typography-body">
+                    <%- data[r].street %><% if(data[r].subpremise){ %>, <%- data[r].subpremise %><% } %><br>
+                    <%- data[r].city %>, <%- data[r].state %> <%- data[r].zip %>
+                  </p>
+                </a>
+              <% } %>
+            </div>
           <% } else {%>
             <div class="row">
               <h3 class="typography-section-headline">No Results Found</h3>
               <p>PG&E Returned no Addresses on this search. You can try refreshing the page to try again, or <a href="/">search something else</a>.</p>
               <br>
               <br>
-              <p>Always check the <a href="http://m.pge.com/#event-map">offical PG&E Outage Map</a> (if it is avialable) for offical details</p>
+              <p>Always check the <a href="http://m.pge.com/#event-map">official PG&E Outage Map</a> (if it is available) for official details</p>
             </div>
           <% }%>
         </div>
         <div class="column large-8 medium-10 small-12 large-centered medium-centered">
           <br>
           <br>
-          <p>Data is pulled from PG&E backened and cached through clouldflare. If the page fails to load, it is most likely because PG&E is having an outage.</p>
+          <p>Data is pulled from PG&E backend and cached through clouldflare. If the page fails to load, it is most likely because PG&E is having an outage.</p>
           <br>
           <br>
         </div>
