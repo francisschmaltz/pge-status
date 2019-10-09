@@ -26,9 +26,13 @@ exports.search = (req, res) => {
 
 
   request(options, (error, response, body) => {
+    console.log(response);
       if (body && response.statusCode == 200) {
         let rawData = JSON.parse(body)
         let results = rawData.results
+
+        console.log(body);
+
 
         res.render('pages/search', {data: results});
       } else {

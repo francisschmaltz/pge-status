@@ -2,7 +2,7 @@ var exports = module.exports = {};
 
 const httpCodes = {
   '401': ['Not Authorized', 'You are not authroized to view this page, but you can view several other of my work examples!'],
-  '403': ['Forbidden', 'CSRF validation failed. Try again later.'],
+  '403': ['PG&E API Error', 'The backend applicaiton server returned an unexpected response'],
   '404': ['Page Not Found.', 'Something went wrong trying to bring you that page.'],
   '429': ['Too Many Requests', 'You\'ve tried to log in too many times too quickly. So now we are both going to take a break for a bit.'],
   '500': ['Server Error', 'Unable to reach PG&E Servers, or they returned an error. Classic PG&E. Sorry.'],
