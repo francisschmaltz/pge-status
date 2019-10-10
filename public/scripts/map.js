@@ -240,30 +240,6 @@ SearchApp.prototype = {
     }
   },
 
-  resultMousedOver: function(resultElement) {
-    var highlightedElement = document.getElementsByClassName("highlighted")[0];
-    if (highlightedElement) {
-      IESupport.classList.remove(highlightedElement, "highlighted");
-    }
-    var selectedIndex;
-    if (resultElement.nodeName != "LI") {
-      resultElement.parentElement.classList.add("highlighted");
-      selectedIndex = resultElement.parentElement.dataset.index;
-    } else {
-      IESupport.classList.add(resultElement, "highlighted");
-      selectedIndex = resultElement.dataset.index;
-    }
-    this.displayAutocompleteResult(selectedIndex);
-  },
-
-  resultMousedOut: function(resultElement) {
-    if (resultElement.nodeName != "LI") {
-      resultElement.parentElement.classList.remove("highlighted");
-    } else {
-      IESupport.classList.remove(resultElement, "highlighted");
-    }
-  },
-
   setAutocompleteHighlight: function(delta) {
     if (this.autocompleteList.children.length > 0) {
       var selectedIndex;
@@ -326,7 +302,6 @@ var searchDelegate = {
 
   searchDidComplete: function(data) {
     searchApp.searchDidComplete(data);
-    console.log(data);
 
     var self = this;
 
@@ -335,17 +310,79 @@ var searchDelegate = {
       map.removeAnnotation(map.annotations[0]);
     }
 
+    const regexZip = /\d{5}[-\s]??/;
+    const regexNum = /(?:^|(?:[.!?]\s))(\w+)/;
+    const regexCty = /([^,]+)/;
 
-		// Add Annotation for starting point in Green
-		var startPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, {
+    const addrFull = data.places[0].formattedAddress
+    const addrName = data.places[0].name
+
+    let addressParts = addrFull.split(", ");
+
+    // Remove name of place
+    if (addressParts.length === 5) {
+      addressParts.splice(0, 1);
+    }
+
+    const zipcode = addressParts[2].match(regexZip)[0];
+    const streetN = addressParts[0].match(regexNum)[0];
+    const strName = addressParts[0].replace(regexNum,'');
+    const ctyName = addressParts[1]
+
+    const lat = data.places[0].coordinate.latitude
+    const lon = data.places[0].coordinate.longitude
+
+
+    var startPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, {
 			// callout: annotationDelegate,
 			title: data.places[0].name,
+      subtitle: 'Loading PG&E Status...',
 			selected: true,
 			animates: true,
-			color: "#0d97ff"
+			color: "#becbd6"
 		});
 		map.addAnnotation(startPin);
     map.region = data.boundingRegion;
+
+
+    function xhrSuccess() {
+      this.callback.apply(this, this.arguments);
+      console.log("this.arguments +" + this);
+    }
+
+    function xhrError() {
+        console.error(this.statusText);
+    }
+
+    function getPGEStatus(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.callback = callback;
+        xhr.arguments = Array.prototype.slice.call(arguments, 2);
+        xhr.onload = xhrSuccess;
+        xhr.onerror = xhrError;
+        xhr.open("GET", url, true);
+        xhr.send(null);
+    }
+
+    function showMessage() {
+        let message = JSON.parse(this.responseText).string;
+        let color = JSON.parse(this.responseText).color;
+        let updatedStatusPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, {
+          // callout: annotationDelegate,
+          title: data.places[0].name,
+          subtitle: message,
+          selected: true,
+          animates: true,
+          color: color
+        });
+        map.removeAnnotation(map.annotations[0]);
+        map.addAnnotation(updatedStatusPin);
+    }
+
+    getPGEStatus(`/check/?cty=${ctyName}&zip=${zipcode}&lon=${lon}&lat=${lat}&str=${strName}&stn=${streetN}`, showMessage);
+
+
+
   },
 
   searchDidError: function(error) {

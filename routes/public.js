@@ -7,6 +7,7 @@ const index = require('../controllers/index');
 const location = require('../controllers/location');
 const details = require('../controllers/details');
 const mk = require('../controllers/mapkit');
+const pge = require('../controllers/pge');
 
 
 const error = require('../controllers/error');
@@ -25,6 +26,10 @@ router.route('/details/*').get(details.getDetails);
 // Apple MapKit
 router.route('/mkToken').get(mk.token);
 router.route('/map').get((req, res) => {res.render('pages/map')});
+
+// PG&E external API check
+router.route('/check').get(pge.check)
+router.route('/check/*').get(pge.check)
 
 
 // Error routes
