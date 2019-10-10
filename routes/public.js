@@ -12,9 +12,7 @@ const router = express.Router();
 
 router.route('/').get(index.display);
 
-// Handle existing posts
-// router.route('/project/auth').get(auth.login);
-// router.route('/project/auth').post(apiLimiter, csrfProtection, auth.checkPassword);
+
 router.route('/search').get(location.search);
 router.route('/search/*').get(location.search);
 router.route('/details').get(details.getDetails);
@@ -23,5 +21,10 @@ router.route('/details/*').get(details.getDetails);
 // Error routes
 router.route('/404').get(error.display);
 router.route('/403').get(error.display);
+
+// Display error for details
+router.route('/502').get(error.details);
+
+router.route('/help').get((req, res) => {res.render('pages/help')});
 
 module.exports = router;

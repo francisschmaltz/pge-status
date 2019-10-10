@@ -16,23 +16,35 @@
           <h1 class="typography-title"><%- location %></h2>
           <br>
           <br>
-          <% if(typeof data !== 'undefined' && data.length > 0){ %>
-            <% for (let r = 0; r < data.length; r++) { %>
-              <div class="row">
-                <h3 class="typography-section-headline"><%- data[r].eventType %>:</h3>
-                <br>
-                <h4 class="typography-label"><%- data[r].message %></h4>
-                <br>
-                <br>
-                <p>Always check the <a href="http://m.pge.com/#event-map">official PG&E Outage Map</a> (if it is available) for official details</p>
-              </div>
-            <% } %>
-          <% } else {%>
-            <h3 class="typography-section-headline">No Outage Reported</h3>
+          <% if(typeof error !== 'undefined'){ %>
+            <h3 class="typography-section-headline">502: PG&E API Error</h3>
+            <h2 class="typography-subsection-headline">No Results Found</h3>
+            <p class="typography-label"> Error Message: <%- error %></p>
             <br>
-            <h4 class="typography-subsection-headline">No outages currently reported by PG&E for this location.</h4>
+            <p>PG&E Returned no addresses on this search. You can try refreshing the page to try again, or <a href="/">search something else</a>.</p>
+            <br>
+            <br>
+            <br>
             <p>Always check the <a href="http://m.pge.com/#event-map">official PG&E Outage Map</a> (if it is available) for official details</p>
-          <% }%>
+          <% } else {%>
+            <% if(typeof data !== 'undefined' && data.length > 0){ %>
+              <% for (let r = 0; r < data.length; r++) { %>
+                <div class="row">
+                  <h3 class="typography-section-headline"><%- data[r].eventType %>:</h3>
+                  <br>
+                  <h4 class="typography-label"><%- data[r].message %></h4>
+                  <br>
+                  <br>
+                  <p>Always check the <a href="http://m.pge.com/#event-map">official PG&E Outage Map</a> (if it is available) for official details</p>
+                </div>
+              <% } %>
+            <% } else {%>
+              <h3 class="typography-section-headline">No Outage Reported</h3>
+              <br>
+              <h4 class="typography-subsection-headline">No outages currently reported by PG&E for this location.</h4>
+              <p>Always check the <a href="http://m.pge.com/#event-map">official PG&E Outage Map</a> (if it is available) for official details</p>
+            <% }%>
+          <% } %>
         </div>
         <div class="column large-8 medium-10 small-12 large-centered medium-centered">
           <br>

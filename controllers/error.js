@@ -24,3 +24,9 @@ exports.display = (req, res) => {
   console.log(httpCodes[code]);
   res.render('pages/error', {errorCode: code, errorStatus: httpCodes[code][0], errorMessage: httpCodes[code][1]});
 }
+
+exports.details = (req, res) => {
+  let eMessage = req.query.m;
+  let location = req.query.loc
+  res.render('pages/details-error', {error: eMessage, loc: location});
+}

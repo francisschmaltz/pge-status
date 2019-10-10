@@ -36,9 +36,14 @@ exports.getDetails = (req, res) => {
 
         res.render('pages/details', {data: events, location: addr});
       } else {
-        console.log('Error' + error);
+        let rawData = JSON.parse(body)
+        let results = rawData.fault.detail.message || 'Unknown PG&E Server Error'
+
+        console.log('Error');
         console.log(error);
-        res.redirect('/403');
+        console.log(results);
+        
+        res.redirect(`/502/?m=${encodeURIComponent(results)}&loc=${searchLoc}`);
       }
   });
 
