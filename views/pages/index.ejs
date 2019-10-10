@@ -15,39 +15,38 @@
               <h2 class="typography-title-reduced hero-subtitle">Search for Current Outages</h2>
             </div>
             <br>
+            <div class="row">
+              <div class="alert alert-warn" role="alert">
+                <b>UPDATE 10:30AM:</b><br>
+                PG&E has disabled the API that this site uses. It may work temporariliy but will most likely fail to return results. This seems to be intentional – not because of a system overload. You can view estimated address impact <a href="/map">on this map</a>.
+              </div>
+            </div>
             <div class="hero-intro">
               <form action="/search/" method="get">
                 <div class="row auth-row">
-              	   <input class="text" type="text" name="loc" placeholder="Street Address..."/>
-                   <input class="button" type="submit" value="Search Address"/>
-                 </div>
+                  <input class="text" type="text" name="loc" placeholder="Street Address..."/>
+                  <input class="button" type="submit" value="Search Address"/>
+                </div>
               </form>
               <br>
               <br>
               <br>
               <p class="typograph-intro intro-copy">
-                 This site uses PG&E's backend system to search and display outages. Results are cached for a few minutes. To view the latest info visit the <a href="http://m.pge.com/#event-map">PG&E Outage Map</a>.
-               </p>
-               <p class="typograph-intro intro-copy">
-                 <br>
-                 As PG&E's site is very unreliable, this site might also be affected. Cloudflare caching is used to try to prevent this, but if PG&E's backend system fails, this site will as well.
+                This site uses PG&E's backend system to search and display outages. Results are cached for a few minutes. To view the latest info visit the <a href="http://m.pge.com/#event-map">PG&E Outage Map</a>.
+              </p>
+              <p class="typograph-intro intro-copy">
+                <br>
+                As PG&E's site is very unreliable, this site might also be affected. Cloudflare caching is used to try to prevent this, but if PG&E's backend system fails, this site will as well.
               </p>
               <br>
             </div>
           </div>
         </div>
       </div>
-      <div class="star-container-title">
-				<div class="star1 star"></div>
-				<div class="star2 star"></div>
-				<div class="star3 star"></div>
-			</div>
-    </section>
-    <section id="projectsList" class="section-projects">
     </section>
   </main>
   <% include ../partials/footer %>
-  </body>
+</body>
 
 
 </html>

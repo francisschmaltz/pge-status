@@ -6,7 +6,11 @@ const express = require('express');
 const index = require('../controllers/index');
 const location = require('../controllers/location');
 const details = require('../controllers/details');
+const mk = require('../controllers/mapkit');
+
+
 const error = require('../controllers/error');
+
 
 const router = express.Router();
 
@@ -17,6 +21,11 @@ router.route('/search').get(location.search);
 router.route('/search/*').get(location.search);
 router.route('/details').get(details.getDetails);
 router.route('/details/*').get(details.getDetails);
+
+// Apple MapKit
+router.route('/mkToken').get(mk.token);
+router.route('/map').get((req, res) => {res.render('pages/map')});
+
 
 // Error routes
 router.route('/404').get(error.display);

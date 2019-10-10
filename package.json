@@ -10,8 +10,11 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "dotenv": "^8.1.0",
     "ejs": "^2.7.1",
     "express": "^4.17.1",
+    "jwa": "^1.4.1",
+    "mapkit-token": "^1.0.2",
     "request": "^2.88.0"
   }
 }

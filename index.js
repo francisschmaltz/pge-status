@@ -5,6 +5,8 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const express = require('express');
 
+// Set base directory
+global.__basedir = __dirname;
 
 // Create express app
 const app = express();

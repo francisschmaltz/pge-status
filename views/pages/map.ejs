@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" prefix="og: http://ogp.me/ns#" class="no-js">
+<head>
+    <% include ../partials/head %>
+    <link rel="stylesheet" href="styles/index.css">
+</head>
+<body class="">
+  <% include ../partials/nav %>
+  <main>
+      <div id="map"></div>
+      <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
+      <script src="scripts/map.js"></script>
+  </main>
+</body>
+<style>
+  #map {
+      position: fixed;
+      top:0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+  }
+
+  header {
+    /* Override position on map */
+    position: fixed !important;
+  }
+
+</style>
+</html>
