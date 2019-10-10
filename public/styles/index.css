@@ -142,6 +142,11 @@ a {
 	background-color: #fff3cd;
 	border-color: #f5c6cb
 }
+.alert.alert-message {
+	color: #004085;
+	background-color: #cce5ff;
+	border-color: #b8daff;
+}
 
 @media (prefers-color-scheme: dark) {
   body, html {
