@@ -42,6 +42,14 @@
             }
           </script>
           <% if(typeof error !== 'undefined'){ %>
+            <div class="row">
+              <div class="alert alert-message" role="alert">
+                <b>UPDATE 11:15AM:</b><br>
+                The PG&E API this site uses for hyper-accurate per-address details is having periods of outages. If search is not working, you can view estimated address impact <a href="/map">on this map</a>.
+              </div>
+            </div>
+            <br>
+            <br>
             <h3 class="typography-section-headline">502: PG&E API Error</h3>
             <h2 class="typography-subsection-headline">No Results Found</h3>
             <p class="typography-label"> Error Message: <%- error %></p>
