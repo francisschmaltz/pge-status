@@ -8,11 +8,43 @@
   <% include ../partials/nav %>
   <main>
       <div id="map"></div>
+      <div class="search-bar">
+        <input id="originInput" type="text" class="origin" placeholder="Search by address..." autocomplete='off'>
+        <div id="autocomplete-box">
+          <ul id="autocomplete-list"></ul>
+        </div>
+      </div>
       <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
       <script src="scripts/map.js"></script>
   </main>
 </body>
 <style>
+  .search-bar {
+    position: fixed;
+    top: 72px;
+    left: 12px;
+    width: calc(100% - 24px);
+    max-width: 500px;
+  }
+  #autocomplete-box {
+    display: block;
+    overflow-y: scroll;
+
+    max-height: calc(100vh - 200px);
+  	border-radius: 6px;
+  	color: #111111;
+  	background-color: #fafcfe;
+  	border: 1px solid #dadcde;
+  }
+  #autocomplete-list li {
+    transition: all 250ms ease;
+    list-style: none;
+    padding: 6px;
+    cursor: pointer;
+  }
+  #autocomplete-list li:hover {
+    background-color: #eaecee;
+  }
   #map {
       position: fixed;
       top:0;
@@ -24,6 +56,11 @@
   header {
     /* Override position on map */
     position: fixed !important;
+  }
+  header .section-content {
+    width: calc(100% - 32px) !important;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
 </style>
