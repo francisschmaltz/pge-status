@@ -313,6 +313,7 @@ var searchDelegate = {
 
     const regexZip = /\d{5}[-\s]??/;
     const regexNum = /(?:^|(?:[.!?]\s))(\w+)/;
+    const regexNSt= /^\d*\s/;
     const regexCty = /([^,]+)/;
 
     const addrFull = data.places[0].formattedAddress
@@ -320,9 +321,17 @@ var searchDelegate = {
 
     let addressParts = addrFull.split(", ");
 
+    console.log(addressParts);
+    console.log(addrFull);
+    console.log(addrName);
     // Remove name of place
     if (addressParts.length === 5) {
-      addressParts.splice(0, 1);
+      if (addressParts[0].match(regexNSt)){
+        addressParts.splice(1, 1);
+      } else {
+        addressParts.splice(0, 1);
+      }
+
     }
 
     const zipcode = addressParts[2].match(regexZip)[0];
@@ -333,6 +342,7 @@ var searchDelegate = {
     const lat = data.places[0].coordinate.latitude
     const lon = data.places[0].coordinate.longitude
 
+    console.log(addressParts);
 
     var startPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, {
 			// callout: annotationDelegate,
@@ -355,6 +365,7 @@ var searchDelegate = {
     }
 
     function getPGEStatus(url, callback) {
+      console.log(url);
         var xhr = new XMLHttpRequest();
         xhr.callback = callback;
         xhr.arguments = Array.prototype.slice.call(arguments, 2);
@@ -392,7 +403,6 @@ var searchDelegate = {
     }
 
     getPGEStatus(`/check/?cty=${ctyName}&zip=${zipcode}&lon=${lon}&lat=${lat}&str=${strName}&stn=${streetN}`, showMessage);
-
 
 
   },
