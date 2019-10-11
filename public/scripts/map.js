@@ -24,7 +24,7 @@ var BayArea = new mapkit.CoordinateRegion(
 );
 var SearchArea = new mapkit.CoordinateRegion(
     new mapkit.Coordinate(38.575, -121.475),
-    new mapkit.CoordinateSpan(2, 2)
+    new mapkit.CoordinateSpan(5, 5)
 );
 
 let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -83,9 +83,7 @@ function SearchApp() {
   // specific location or to explicitly set the language.
   // For example:
   // var search = new mapkit.Search({ language: "fr-CA", getsUserLocation: true });
-  this.search = new mapkit.Search({
-		region: SearchArea
-	});
+  this.search = new mapkit.Search();
 
   this.searchInput = document.getElementById("originInput");
   this.searchInput.addEventListener("keyup", this);
@@ -158,7 +156,7 @@ SearchApp.prototype = {
         // `autocompleteDidComplete` and `autocompleteDidError` methods
         // is sent as a parameter to `search.autocomplete()`.
         // A function can also be used.
-        this.search.autocomplete(query, searchDelegate, {region: SearchArea});
+        this.search.autocomplete(query, searchDelegate);
 
       } else {
         this.shouldShowAutocomplete(false);
@@ -214,7 +212,7 @@ SearchApp.prototype = {
     // The search method accepts an optional `options` hash.
     // In this case, the displayed map region is used to find results near the
     // displayed map region.
-    this.requestId = this.search.search(query, searchDelegate, { region: SearchArea });
+    this.requestId = this.search.search(query, searchDelegate);
   },
 
   autocompleteDidComplete: function(data) {
