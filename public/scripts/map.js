@@ -31,11 +31,13 @@ let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 let paddingTop
 if (w < 600) {
   paddingTop = 140
+  paddingLft = 700
 } else {
-  paddingTop = 62
+  paddingTop = 100
+  paddingLft = 0
 }
 
-var map = new mapkit.Map("map", {"colorScheme": `${mapColor()}`, padding: new mapkit.Padding({ top: paddingTop }) });
+var map = new mapkit.Map("map", {"colorScheme": `${mapColor()}`, padding: new mapkit.Padding({ top: paddingTop, left: paddingLft}) });
 map.region = BayArea;
 
 // Import GeoJSON data with the shape of the states and their population.

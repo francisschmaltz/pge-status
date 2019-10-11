@@ -15,7 +15,9 @@ const error = require('../controllers/error');
 
 const router = express.Router();
 
-router.route('/').get(index.display);
+// Index is no longer valid due to PG&E API Change
+// router.route('/').get((index.display));
+router.route('/').get((req, res) => {res.redirect('map')});
 
 
 router.route('/search').get(location.search);
