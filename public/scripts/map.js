@@ -1,3 +1,27 @@
+let focusInput = document.getElementById('originInput');
+focusInput.focus();
+focusInput.select();
+
+const getCookie = name => {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2){
+    return parts.pop().split(";").shift();
+  } else {
+    return "no-cookie"
+  }
+}
+
+let ifSeen = getCookie("u1130");
+console.log(ifSeen);
+if (ifSeen === 'seen') {
+  let update = document.getElementById('u1130');
+  update.style.display = 'none'
+  update.style.height='0'
+} else {
+  document.cookie = "u1130=seen";
+}
+
 const mapkit = window.mapkit;
 
 mapkit.init({
@@ -29,15 +53,32 @@ var SearchArea = new mapkit.CoordinateRegion(
 
 let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 let paddingTop
-if (w < 600) {
-  paddingTop = 140
+let paddingLft
+if (w > 600) {
+  paddingTop = 60
   paddingLft = 700
 } else {
-  paddingTop = 100
+  let alertHeight = document.getElementsByClassName('alert')[0].offsetHeight || -12;
+  console.log(alertHeight);
+  paddingTop = 132 + alertHeight
   paddingLft = 0
 }
 
 var map = new mapkit.Map("map", {"colorScheme": `${mapColor()}`, padding: new mapkit.Padding({ top: paddingTop, left: paddingLft}) });
+
+const dismiss = element => {
+  let toDismiss = document.getElementById(element);
+  toDismiss.style.opacity = "0"
+  setTimeout(function () {
+      toDismiss.style.display = "none"
+      if (w < 600) {
+        map.padding = new mapkit.Padding({ top: 120, left: paddingLft});
+      }
+  }, 350);
+
+}
+
+
 map.region = BayArea;
 
 // Import GeoJSON data with the shape of the states and their population.
