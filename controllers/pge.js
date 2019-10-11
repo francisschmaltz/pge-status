@@ -41,18 +41,27 @@ exports.check = (req, res) => {
       if (body && response.statusCode == 200) {
         let rawData = JSON.parse(body)
 
-        let status = rawData.outageResults[0].outage
         let message
         let statusColor
 
-        if (status !== null) {
-          message = 'Power Outage Reported'
-          statusColor = "#f23050"
-
+        if (rawData.isSuccess === false) {
+          statusColor = "#ffae00"
+          message = rawData.errorMessage
         } else {
-          message = 'No Outages Reported'
-          statusColor = "#30f27a"
+
+          let status = rawData.outageResults[0].outage
+
+          if (status !== null) {
+            message = 'Power Outage Reported'
+            statusColor = "#f23050"
+
+          } else {
+            message = 'No Outages Reported'
+            statusColor = "#30f27a"
+          }
         }
+
+
 
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify({string: message, color: statusColor}));
