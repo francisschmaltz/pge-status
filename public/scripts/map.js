@@ -61,8 +61,8 @@ mapkit.importGeoJSON("/vendor/pge.geojson", {
         };
 
         overlay.style = new mapkit.Style({
-            fillOpacity: 0.5,
-            lineWidth: 0.5,
+            fillOpacity: 0.15,
+            lineWidth: 1,
             fillColor: "#fa9fb5"
         });
 
@@ -364,6 +364,17 @@ var searchDelegate = {
         xhr.send(null);
     }
 
+    var calloutDelegate = {
+        calloutRightAccessoryForAnnotation: function() {
+            var accessoryViewRight = document.createElement("a");
+            accessoryViewRight.className = "right-accessory-view";
+            accessoryViewRight.href = "https://pge.com/";
+            accessoryViewRight.target = "_blank";
+            accessoryViewRight.appendChild(document.createTextNode("ⓘ"));
+
+            return accessoryViewRight;
+        }
+    }
     function showMessage() {
         let message = JSON.parse(this.responseText).string;
         let color = JSON.parse(this.responseText).color;
@@ -373,7 +384,8 @@ var searchDelegate = {
           subtitle: message,
           selected: true,
           animates: true,
-          color: color
+          color: color,
+          callout: calloutDelegate
         });
         map.removeAnnotation(map.annotations[0]);
         map.addAnnotation(updatedStatusPin);
