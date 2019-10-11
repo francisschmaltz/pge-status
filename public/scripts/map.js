@@ -24,7 +24,7 @@ var BayArea = new mapkit.CoordinateRegion(
 );
 var SearchArea = new mapkit.CoordinateRegion(
     new mapkit.Coordinate(38.575, -121.475),
-    new mapkit.CoordinateSpan(5, 5)
+    new mapkit.CoordinateSpan(10, 10)
 );
 
 let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -72,18 +72,14 @@ mapkit.importGeoJSON("/vendor/pge.geojson", {
     // When all the data has been imported, we can show the results.
     geoJSONDidComplete: function(overlays) {
         map.addItems(overlays);
-        console.log("it's doing something?");
-
     }
 });
 
 //Define Search app
 function SearchApp() {
-  // Search can also be instantiated with a few options to find results near a
-  // specific location or to explicitly set the language.
-  // For example:
-  // var search = new mapkit.Search({ language: "fr-CA", getsUserLocation: true });
-  this.search = new mapkit.Search();
+  this.search = new mapkit.Search({
+		region: SearchArea
+	});
 
   this.searchInput = document.getElementById("originInput");
   this.searchInput.addEventListener("keyup", this);
@@ -156,7 +152,7 @@ SearchApp.prototype = {
         // `autocompleteDidComplete` and `autocompleteDidError` methods
         // is sent as a parameter to `search.autocomplete()`.
         // A function can also be used.
-        this.search.autocomplete(query, searchDelegate);
+        this.search.autocomplete(query, searchDelegate, {region: SearchArea});
 
       } else {
         this.shouldShowAutocomplete(false);
@@ -195,8 +191,13 @@ SearchApp.prototype = {
 
   // resultSelected performs a search using the selected SearchAutocompleteResult.
   resultSelected: function(result) {
+    console.log('resultSelected');
+    console.log(result);
+
     this.performSearch(result);
+
     this.searchInput.value = result.displayLines[0];
+
     this.removeDisplayedAnnotations();
     this.shouldShowAutocomplete(false);
   },
@@ -212,7 +213,16 @@ SearchApp.prototype = {
     // The search method accepts an optional `options` hash.
     // In this case, the displayed map region is used to find results near the
     // displayed map region.
-    this.requestId = this.search.search(query, searchDelegate);
+    console.log('performSearch.query');
+    console.log(query);
+
+    // Create new search region to prevent results from not matching auto complete
+    let SearchResultField = new mapkit.CoordinateRegion(
+        new mapkit.Coordinate(query.coordinate.latitude, query.coordinate.longitude),
+        new mapkit.CoordinateSpan(1, 1)
+    );
+
+    this.requestId = this.search.search(query, searchDelegate, { region: SearchResultField });
   },
 
   autocompleteDidComplete: function(data) {
@@ -224,7 +234,7 @@ SearchApp.prototype = {
   searchDidComplete: function(data) {
 		globalStartingPoint = data;
 		// console.log(globalStartingPoint);
-		// console.log(data);
+		console.log(data);
 		console.log("Global Starting Point Defined");
   },
 
@@ -299,6 +309,8 @@ var searchDelegate = {
   },
 
   searchDidComplete: function(data) {
+    console.log('searchDelegate.searchDidComplete');
+    console.log(data);
     searchApp.searchDidComplete(data);
 
     var self = this;
