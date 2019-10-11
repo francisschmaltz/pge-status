@@ -163,6 +163,7 @@ SearchApp.prototype = {
   // displayAutocomplete generates a search autocomplete menu based off of the
   // autocomplete data returned by the server.
   displayAutocomplete: function(data) {
+    _paq.push(['trackEvent', 'map search', 'autocomplete', 'auto complete returned search result'])
     this.autocompleteList.innerHTML = "";
 
     data.results.forEach(function(result, i) {
@@ -217,7 +218,7 @@ SearchApp.prototype = {
         new mapkit.Coordinate(query.coordinate.latitude, query.coordinate.longitude),
         new mapkit.CoordinateSpan(1, 1)
     );
-
+    _paq.push(['trackEvent', 'map search', 'selected', 'search result selected'])
     this.requestId = this.search.search(query, searchDelegate, { region: SearchResultField });
   },
 
@@ -321,9 +322,6 @@ var searchDelegate = {
 
     let addressParts = addrFull.split(", ");
 
-    console.log(addressParts);
-    console.log(addrFull);
-    console.log(addrName);
     // Remove name of place
     if (addressParts.length === 5) {
       if (addressParts[0].match(regexNSt)){
@@ -341,8 +339,6 @@ var searchDelegate = {
 
     const lat = data.places[0].coordinate.latitude
     const lon = data.places[0].coordinate.longitude
-
-    console.log(addressParts);
 
     var startPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, {
 			// callout: annotationDelegate,
@@ -365,7 +361,6 @@ var searchDelegate = {
     }
 
     function getPGEStatus(url, callback) {
-      console.log(url);
         var xhr = new XMLHttpRequest();
         xhr.callback = callback;
         xhr.arguments = Array.prototype.slice.call(arguments, 2);
@@ -389,6 +384,7 @@ var searchDelegate = {
     function showMessage() {
         let message = JSON.parse(this.responseText).string;
         let color = JSON.parse(this.responseText).color;
+        _paq.push(['trackEvent', 'map search', 'result', message])
         let updatedStatusPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, {
           // callout: annotationDelegate,
           title: data.places[0].name,
