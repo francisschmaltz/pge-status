@@ -20,11 +20,11 @@ const mapColor = () => {
 }
 var BayArea = new mapkit.CoordinateRegion(
     new mapkit.Coordinate(38.575, -121.475),
-    new mapkit.CoordinateSpan(1, 1)
+    new mapkit.CoordinateSpan(2, 2)
 );
 var SearchArea = new mapkit.CoordinateRegion(
     new mapkit.Coordinate(38.575, -121.475),
-    new mapkit.CoordinateSpan(10, 10)
+    new mapkit.CoordinateSpan(3, 3)
 );
 
 let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -191,8 +191,6 @@ SearchApp.prototype = {
 
   // resultSelected performs a search using the selected SearchAutocompleteResult.
   resultSelected: function(result) {
-    console.log('resultSelected');
-    console.log(result);
 
     this.performSearch(result);
 
@@ -213,8 +211,6 @@ SearchApp.prototype = {
     // The search method accepts an optional `options` hash.
     // In this case, the displayed map region is used to find results near the
     // displayed map region.
-    console.log('performSearch.query');
-    console.log(query);
 
     // Create new search region to prevent results from not matching auto complete
     let SearchResultField = new mapkit.CoordinateRegion(
@@ -233,9 +229,6 @@ SearchApp.prototype = {
   // searchDidComplete displays the search results as annotations on the map.
   searchDidComplete: function(data) {
 		globalStartingPoint = data;
-		// console.log(globalStartingPoint);
-		console.log(data);
-		console.log("Global Starting Point Defined");
   },
 
   // The rest of the functions below are related to the UI of the search/search
@@ -309,8 +302,6 @@ var searchDelegate = {
   },
 
   searchDidComplete: function(data) {
-    console.log('searchDelegate.searchDidComplete');
-    console.log(data);
     searchApp.searchDidComplete(data);
 
     var self = this;
@@ -357,7 +348,6 @@ var searchDelegate = {
 
     function xhrSuccess() {
       this.callback.apply(this, this.arguments);
-      console.log("this.arguments +" + this);
     }
 
     function xhrError() {
