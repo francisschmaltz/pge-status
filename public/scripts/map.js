@@ -56,7 +56,7 @@ let paddingTop
 let paddingLft
 if (w > 600) {
   paddingTop = 60
-  paddingLft = 700
+  paddingLft = 500
 } else {
   let alertHeight = document.getElementsByClassName('alert')[0].offsetHeight || -12;
   console.log(alertHeight);
