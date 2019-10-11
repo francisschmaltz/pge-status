@@ -26,6 +26,9 @@
             <br>
             <br>
             <p>Always check the <a href="http://m.pge.com/#event-map">official PG&E Outage Map</a> (if it is available) for official details</p>
+            <script>
+              _paq.push(['trackEvent', 'location search', 'Details API Error', '<%- error %>'])
+            </script>
           <% } else {%>
             <% if(typeof data !== 'undefined' && data.length > 0){ %>
               <div class="row">
@@ -34,6 +37,9 @@
                 </div>
               </div>
               <br>
+              <script>
+                _paq.push(['trackEvent', 'location search', 'details', 'Outages Reported'])
+              </script>
               <% for (let r = 0; r < data.length; r++) { %>
                 <div class="row">
                   <h3 class="typography-section-headline"><%- data[r].eventType %>:</h3>
@@ -48,6 +54,9 @@
               <br>
               <h4 class="typography-subsection-headline">No outages currently reported by PG&E for this location.</h4>
               <p>Always check the <a href="http://m.pge.com/#event-map">official PG&E Outage Map</a> (if it is available) for official details</p>
+              <script>
+                _paq.push(['trackEvent', 'location search', 'details', 'No Outages Reported'])
+              </script>
             <% }%>
           <% } %>
         </div>
