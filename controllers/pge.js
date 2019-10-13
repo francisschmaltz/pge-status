@@ -67,7 +67,7 @@ exports.check = (req, res) => {
         res.end(JSON.stringify({string: message, color: statusColor}));
       } else {
         res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({ string: 'Unable to check PG&E', color: "#0d97ff" }));
+        res.end(JSON.stringify({ string: 'PG&E Error: Unable to check power outage status', color: "#0d97ff" }));
       }
   });
 

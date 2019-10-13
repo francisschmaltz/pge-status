@@ -271,6 +271,7 @@ SearchApp.prototype = {
     );
     _paq.push(['trackEvent', 'map search', 'selected', 'search result selected'])
     this.requestId = this.search.search(query, searchDelegate, { region: SearchResultField });
+
   },
 
   autocompleteDidComplete: function(data) {
@@ -409,6 +410,19 @@ var searchDelegate = {
 
     function xhrError() {
         console.error(this.statusText);
+
+        _paq.push(['trackEvent', 'map search', 'result', this.statusText])
+        let updatedStatusPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, {
+          // callout: annotationDelegate,
+          title: data.places[0].name,
+          subtitle: 'PG&E Error: Unable to check power outage status',
+          selected: true,
+          animates: true,
+          color: '#0d97ff',
+          callout: calloutDelegate
+        });
+        map.removeAnnotation(map.annotations[0]);
+        map.addAnnotation(updatedStatusPin);
     }
 
     function getPGEStatus(url, callback) {
