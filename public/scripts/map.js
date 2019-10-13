@@ -12,9 +12,10 @@ const getCookie = name => {
   }
 }
 
-let ifSeen = getCookie("u1130");
-console.log(ifSeen);
-if (ifSeen === 'seen') {
+let seen = getCookie("u1130");
+let time = (new Date).getTime();
+
+if ((seen === 'seen') || (time > 1571116969420)) {
   let update = document.getElementById('u1130');
   update.style.display = 'none'
   update.style.height='0'
@@ -35,6 +36,7 @@ mapkit.init({
 
 // Set Map Color based off inital theme
 const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+
 const mapColor = () => {
   if (prefersDark) {
     return "dark"
@@ -42,9 +44,10 @@ const mapColor = () => {
     return "light"
   }
 }
+
 var BayArea = new mapkit.CoordinateRegion(
-    new mapkit.Coordinate(38.575, -121.475),
-    new mapkit.CoordinateSpan(2, 2)
+    new mapkit.Coordinate(38.12069, -121.69429),
+    new mapkit.CoordinateSpan(3, 3)
 );
 var SearchArea = new mapkit.CoordinateRegion(
     new mapkit.Coordinate(38.575, -121.475),
@@ -52,11 +55,13 @@ var SearchArea = new mapkit.CoordinateRegion(
 );
 
 let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+
 let paddingTop
 let paddingLft
+
 if (w > 600) {
   paddingTop = 60
-  paddingLft = 500
+  paddingLft = 0
 } else {
   let alertHeight = document.getElementsByClassName('alert')[0].offsetHeight || -12;
   console.log(alertHeight);
@@ -64,12 +69,12 @@ if (w > 600) {
   paddingLft = 0
 }
 
-var map = new mapkit.Map("map", {"colorScheme": `${mapColor()}`, padding: new mapkit.Padding({ top: paddingTop, left: paddingLft}) });
+var map = new mapkit.Map("map", {colorScheme: `${mapColor()}`, padding: new mapkit.Padding({ top: paddingTop, left: paddingLft}) });
 
 const dismiss = element => {
   let toDismiss = document.getElementById(element);
   toDismiss.style.opacity = "0"
-  setTimeout(function () {
+  setTimeout(() => {
       toDismiss.style.display = "none"
       if (w < 600) {
         map.padding = new mapkit.Padding({ top: 120, left: paddingLft});
@@ -82,41 +87,44 @@ const dismiss = element => {
 map.region = BayArea;
 
 // Import GeoJSON data with the shape of the states and their population.
-mapkit.importGeoJSON("/vendor/pge.geojson", {
-    // Some states are represented as MultiPolygons; we transform them into
-    // a single PolygonOverlay by concatenating the lists of lists of points.
-    itemForMultiPolygon: function(collection, geoJSON) {
-        var overlays = collection.getFlattenedItemList();
-        var points = overlays.reduce(function(points, overlay) {
-            return points.concat(overlay.points);
-        }, []);
-        return new mapkit.PolygonOverlay(points);
-    },
+// Disabled as of october 12th due to pge restoring power after PSPC
 
-    // After an overlay has been created for a feature (either directly or through
-    // itemForMultiPolygon above), the properties of the feature are used to add data
-    // and set the style (especially the fill color) based on population count.
-    itemForFeature: function(overlay, geoJSON) {
 
-        // Add data to the overlay to be shown when it is selected.
-        overlay.data = {
-            name: geoJSON.properties.name,
-        };
-
-        overlay.style = new mapkit.Style({
-            fillOpacity: 0.15,
-            lineWidth: 1,
-            fillColor: "#fa9fb5"
-        });
-
-        return overlay;
-    },
-
-    // When all the data has been imported, we can show the results.
-    geoJSONDidComplete: function(overlays) {
-        map.addItems(overlays);
-    }
-});
+// mapkit.importGeoJSON("/vendor/pge.geojson", {
+//     // Some states are represented as MultiPolygons; we transform them into
+//     // a single PolygonOverlay by concatenating the lists of lists of points.
+//     itemForMultiPolygon: function(collection, geoJSON) {
+//         var overlays = collection.getFlattenedItemList();
+//         var points = overlays.reduce(function(points, overlay) {
+//             return points.concat(overlay.points);
+//         }, []);
+//         return new mapkit.PolygonOverlay(points);
+//     },
+//
+//     // After an overlay has been created for a feature (either directly or through
+//     // itemForMultiPolygon above), the properties of the feature are used to add data
+//     // and set the style (especially the fill color) based on population count.
+//     itemForFeature: function(overlay, geoJSON) {
+//
+//         // Add data to the overlay to be shown when it is selected.
+//         overlay.data = {
+//             name: geoJSON.properties.name,
+//         };
+//
+//         overlay.style = new mapkit.Style({
+//             fillOpacity: 0.15,
+//             lineWidth: 1,
+//             fillColor: "#fa9fb5"
+//         });
+//
+//         return overlay;
+//     },
+//
+//     // When all the data has been imported, we can show the results.
+//     geoJSONDidComplete: function(overlays) {
+//         map.addItems(overlays);
+//     }
+// });
 
 //Define Search app
 function SearchApp() {
@@ -452,3 +460,32 @@ var searchDelegate = {
 };
 
 var searchApp = new SearchApp();
+
+const DARK = '(prefers-color-scheme: dark)'
+const LIGHT = '(prefers-color-scheme: light)'
+
+const changeWebsiteTheme = scheme => {
+   console.log('theme changed to ' + scheme + '. Updating mapkit theme');
+   map.colorScheme = scheme
+}
+
+const detectColorScheme = () => {
+    if(!window.matchMedia) {
+        return
+    }
+    function listener({matches, media}) {
+        if(!matches) {
+            return
+        }
+        if(media === DARK) {
+            changeWebsiteTheme('dark')
+        } else if (media === LIGHT) {
+            changeWebsiteTheme('light')
+        }
+    }
+    const mqDark = window.matchMedia(DARK)
+    mqDark.addListener(listener)
+    const mqLight = window.matchMedia(LIGHT)
+    mqLight.addListener(listener)
+}
+detectColorScheme();

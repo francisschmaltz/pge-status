@@ -9,9 +9,9 @@
   <main>
       <div id="map"></div>
       <div class="search-bar">
-        <div id="u1130" class="alert alert-message" role="alert" style="transition: all 300ms ease">
-          <b>Update October 11:</b><br>
-          This map now contains the latest per-address outage details from <a href="//www.pge.com">PG&E</a>. Data is updated every 15 minutes.
+        <div id="u1130" class="alert alert-success" role="alert" style="transition: all 300ms ease">
+          <b>Update October 12:</b><br>
+          PG&E has restored service to all customers affected by the Public Safety Power Shutoff initiated on 10/09/19. This map will continue to provide power outage status – udpated every 15 minutes.
           <span class="dismissIcon" onClick="dismiss('u1130')" aria-label="Dismiss Alert">✕</span>
         </div>
         <input id="originInput" type="text" class="origin" placeholder="Search by address..." autocomplete='off'/>
@@ -24,47 +24,6 @@
   </main>
 </body>
 <style>
-  .dismissIcon {
-    height: 20px;
-    padding-left: 6px;
-    padding-top: 2px;
-    padding-right: 10px;
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    right: 0;
-    text-align: right;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: .02em;
-    text-transform: uppercase;
-  }
-  .search-bar {
-    position: fixed;
-    top: 72px;
-    left: 12px;
-    width: calc(100% - 24px);
-    max-width: 500px;
-  }
-  #autocomplete-box {
-    display: block;
-    overflow-y: scroll;
-
-    max-height: calc(100vh - 400px);
-  	border-radius: 6px;
-  	color: #111111;
-  	background-color: #fafcfe;
-  	border: 1px solid #dadcde;
-  }
-  #autocomplete-list li {
-    transition: all 250ms ease;
-    list-style: none;
-    padding: 6px;
-    cursor: pointer;
-  }
-  #autocomplete-list li:hover {
-    background-color: #eaecee;
-  }
   #map {
       position: fixed;
       top:0;

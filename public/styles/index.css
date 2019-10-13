@@ -147,6 +147,55 @@ a {
 	background-color: #cce5ff;
 	border-color: #b8daff;
 }
+.alert.alert-success {
+	color: #087f5b;
+	background-color: #e6fcf5;
+	border-color: #20c997;
+}
+
+.dismissIcon {
+	height: 20px;
+	padding-left: 6px;
+	padding-top: 2px;
+	padding-right: 10px;
+	cursor: pointer;
+	position: absolute;
+	top: 0;
+	right: 0;
+	text-align: right;
+	font-size: 20px;
+	font-weight: 700;
+	letter-spacing: .02em;
+	text-transform: uppercase;
+}
+.search-bar {
+	position: fixed;
+	top: 72px;
+	left: 12px;
+	width: calc(100% - 24px);
+	max-width: 500px;
+}
+#autocomplete-box {
+	display: block;
+	overflow-y: scroll;
+	max-height: calc(100vh - 160px);
+	border-radius: 6px;
+	color: #111111;
+	background-color: #fafcfe;
+	border: 1px solid #dadcde;
+	box-shadow: 0 2px 12px rgba(0,0,0,.15)
+
+}
+#autocomplete-list li {
+	transition: all 250ms ease;
+	list-style: none;
+	padding: 10px;
+	padding-left: 15px;
+	cursor: pointer;
+}
+#autocomplete-list li:hover {
+	background-color: #eaecee;
+}
 
 @media (prefers-color-scheme: dark) {
   body, html {
@@ -171,5 +220,13 @@ a {
 	}
 	.search-card:hover {
 		background-color: #1e222b;
+	}
+	#autocomplete-box {
+		border-color: #2B3750;
+		background-color: #0e121b;
+		color: #eaebec;
+	}
+	#autocomplete-list li:hover {
+		background-color: #1c2435
 	}
 }
