@@ -12,15 +12,15 @@ const getCookie = name => {
   }
 }
 
-let seen = getCookie("u1130");
+let seen = getCookie('uClear');
 let time = (new Date).getTime();
 
 if ((seen === 'seen') || (time > 1571116969420)) {
-  let update = document.getElementById('u1130');
+  let update = document.getElementById('uClear');
   update.style.display = 'none'
   update.style.height='0'
 } else {
-  document.cookie = "u1130=seen";
+  document.cookie = "uClear=seen";
 }
 
 const mapkit = window.mapkit;
@@ -59,15 +59,21 @@ let w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 let paddingTop
 let paddingLft
 
+let alertHeight = document.getElementsByClassName('alert')[0].offsetHeight || -12;
+
 if (w > 600) {
   paddingTop = 60
   paddingLft = 0
 } else {
-  let alertHeight = document.getElementsByClassName('alert')[0].offsetHeight || -12;
-  console.log(alertHeight);
   paddingTop = 132 + alertHeight
   paddingLft = 0
 }
+if (alertHeight !== -12) {
+  console.log('it doesnt');
+  let autocompleteBox = document.getElementById('autocomplete-box')
+  autocompleteBox.style.maxHeight = `calc(100vh - 165px - ${alertHeight}px`;
+}
+
 
 var map = new mapkit.Map("map", {colorScheme: `${mapColor()}`, padding: new mapkit.Padding({ top: paddingTop, left: paddingLft}) });
 
@@ -79,6 +85,9 @@ const dismiss = element => {
       if (w < 600) {
         map.padding = new mapkit.Padding({ top: 120, left: paddingLft});
       }
+      let autocompleteBox = document.getElementById('autocomplete-box')
+      // Reset result maxHeight
+      autocompleteBox.style.maxHeight = `calc(100vh - 160px`;
   }, 350);
 
 }
