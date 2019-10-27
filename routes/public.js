@@ -19,12 +19,6 @@ const router = express.Router();
 // router.route('/').get((index.display));
 router.route('/').get((req, res) => {res.redirect('map')});
 
-
-router.route('/search').get(location.search);
-router.route('/search/*').get(location.search);
-router.route('/details').get(details.getDetails);
-router.route('/details/*').get(details.getDetails);
-
 // Apple MapKit
 router.route('/mkToken').get(mk.token);
 router.route('/map').get((req, res) => {res.render('pages/map')});
