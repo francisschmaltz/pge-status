@@ -14,11 +14,9 @@ const reqHeaders = {
 var exports = (module.exports = {});
 
 exports.check = (req, res) => {
-  console.log("pge check");
+  console.log("PGE Check");
 
   // get details needed for API
-
-  console.log(req.query);
   let cty = req.query.cty;
   let zip = req.query.zip;
 
@@ -29,11 +27,11 @@ exports.check = (req, res) => {
   let stn = req.query.stn;
 
   const dataString = encodeURI(`${stn} ${str} ${cty} ${zip}`);
-  console.log(dataString);
+  // console.log(dataString);
 
   const options = {
     method: "GET",
-    url: `http://ewapi.cloudapi.pge.com/single-address-outages?address=${dataString}`,
+    url: `https://ewapi.cloudapi.pge.com/single-address-outages?address=${dataString}`,
     headers: reqHeaders,
   };
 
@@ -44,15 +42,14 @@ exports.check = (req, res) => {
       let message;
       let statusColor;
 
-      if (!rawData || rawData.state !== "CA") {
+      if (!rawData || rawData.prem_state !== "CA") {
         statusColor = "#ffae00";
         message = "Unable to Load PG&E API for this Address";
       } else {
-        let outage = rawData.current_outage;
-
-        if (outage) {
+        let outage = rawData.sp_meter_transformer_details[0].current_outage;
+        if (outage.last_update) {
           message = `Outage Reported. PG&E Status: ${
-            rawData.current_outage.crew_current_status || "Unknown"
+            outage.crew_current_status || "Unknown"
           }`;
           statusColor = "#f23050";
         } else {
