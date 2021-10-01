@@ -4,7 +4,6 @@ const express = require("express");
 // Load public controllers
 const index = require("../controllers/index");
 const location = require("../controllers/location");
-const details = require("../controllers/details");
 const mk = require("../controllers/mapkit");
 const pge = require("../controllers/pge");
 
