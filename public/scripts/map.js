@@ -435,7 +435,7 @@ var searchDelegate = {
         accessoryViewRight.className = "right-accessory-view";
         accessoryViewRight.href = "https://pge.com/";
         accessoryViewRight.target = "_blank";
-        accessoryViewRight.appendChild(document.createTextNode("ⓘ"));
+        accessoryViewRight.appendChild(document.createTextNode("PG&E↗"));
 
         return accessoryViewRight;
       },
