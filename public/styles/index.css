@@ -1,3 +1,11 @@
+.body-fixed {
+	position: absolute;
+	overflow: hidden;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
 html { scroll-behavior: smooth }
 h1 {
 	letter-spacing: -.02em !important;
@@ -9,10 +17,7 @@ h1 {
     “Ubuntu”, “Cantarell”, “Fira Sans”,
     “Droid Sans”, sans-serif !important
 }
-/* .section-hero h1 { */
-	/* font-family: "Times", "Times New Roman", serif !important; */
-	font-weight: 700 !important;
-}
+
 
 .title-text {
 	padding-bottom: 20px;
@@ -42,15 +47,12 @@ a {
 	position: relative;
 	overflow:	hidden;
 	min-height: calc( 100vh - 41px );
-	/* background-color: #111213; */
-	tex
 }
 .section-details {
 	position: relative;
 	overflow:	hidden;
 	min-height: calc( 100vh - 41px - 53px );
 	/* background-color: #111213; */
-	tex
 }
 .section-hero .typography-title-elevated {
 	font-size: 2.5rem;
@@ -175,15 +177,21 @@ a {
 	width: calc(100% - 24px);
 	max-width: 500px;
 }
+#originInput {
+	background: rgba(255, 255, 255, 0.90);
+	-webkit-backdrop-filter: saturate(200%) blur(18px);
+	backdrop-filter: saturate(200%) blur(18px);
+}
 #autocomplete-box {
 	display: block;
 	overflow-y: scroll;
 	max-height: calc(100vh - 160px);
 	border-radius: 6px;
 	color: #111111;
-	background-color: #fafcfe;
-	box-shadow: 0 2px 12px rgba(0,0,0,.15)
-
+	background: rgba(255, 255, 255, 0.90);
+	-webkit-backdrop-filter: saturate(200%) blur(18px);
+	backdrop-filter: saturate(200%) blur(18px);
+	box-shadow: 0 2px 12px rgba(0,0,0,.15);
 }
 #autocomplete-list li {
 	transition: all 250ms ease;
@@ -193,7 +201,8 @@ a {
 	cursor: pointer;
 }
 #autocomplete-list li:hover {
-	background-color: #eaecee;
+	background: rgba(255, 255, 255, .975);
+	box-shadow: 0 0px 12px rgba(0,0,0,.085)
 }
 
 @media (prefers-color-scheme: dark) {

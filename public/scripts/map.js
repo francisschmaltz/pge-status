@@ -53,7 +53,7 @@ let paddingLft;
 let alertHeight = -12;
 
 if (w > 600) {
-  paddingTop = 60;
+  paddingTop = 68;
   paddingLft = 0;
 } else {
   paddingTop = 132 + alertHeight;
@@ -435,7 +435,7 @@ var searchDelegate = {
         accessoryViewRight.className = "right-accessory-view";
         accessoryViewRight.href = "https://pge.com/";
         accessoryViewRight.target = "_blank";
-        accessoryViewRight.appendChild(document.createTextNode("ⓘ"));
+        accessoryViewRight.appendChild(document.createTextNode("PG&E↗"));
 
         return accessoryViewRight;
       },
