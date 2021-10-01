@@ -3,7 +3,6 @@ require("dotenv").config();
 
 const fs = require("fs");
 
-const jwa = require("jwa");
 var jwt = require("jsonwebtoken");
 
 genToken = () => {

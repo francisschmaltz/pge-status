@@ -53,7 +53,7 @@ let paddingLft;
 let alertHeight = -12;
 
 if (w > 600) {
-  paddingTop = 60;
+  paddingTop = 68;
   paddingLft = 0;
 } else {
   paddingTop = 132 + alertHeight;

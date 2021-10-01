@@ -1,3 +1,11 @@
+.body-fixed {
+	position: absolute;
+	overflow: hidden;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
 html { scroll-behavior: smooth }
 h1 {
 	letter-spacing: -.02em !important;
@@ -175,15 +183,21 @@ a {
 	width: calc(100% - 24px);
 	max-width: 500px;
 }
+#originInput {
+	background: rgba(255, 255, 255, 0.85);
+	-webkit-backdrop-filter: saturate(200%) blur(18px);
+	backdrop-filter: saturate(200%) blur(18px);
+}
 #autocomplete-box {
 	display: block;
 	overflow-y: scroll;
 	max-height: calc(100vh - 160px);
 	border-radius: 6px;
 	color: #111111;
-	background-color: #fafcfe;
-	box-shadow: 0 2px 12px rgba(0,0,0,.15)
-
+	background: rgba(255, 255, 255, 0.90);
+	-webkit-backdrop-filter: saturate(200%) blur(18px);
+	backdrop-filter: saturate(200%) blur(18px);
+	box-shadow: 0 2px 12px rgba(0,0,0,.15);
 }
 #autocomplete-list li {
 	transition: all 250ms ease;
@@ -193,7 +207,8 @@ a {
 	cursor: pointer;
 }
 #autocomplete-list li:hover {
-	background-color: #eaecee;
+	background: rgba(255, 255, 255, .975);
+	box-shadow: 0 0px 12px rgba(0,0,0,.085)
 }
 
 @media (prefers-color-scheme: dark) {
