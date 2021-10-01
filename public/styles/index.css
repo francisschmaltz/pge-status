@@ -17,10 +17,7 @@ h1 {
     “Ubuntu”, “Cantarell”, “Fira Sans”,
     “Droid Sans”, sans-serif !important
 }
-/* .section-hero h1 { */
-	/* font-family: "Times", "Times New Roman", serif !important; */
-	font-weight: 700 !important;
-}
+
 
 .title-text {
 	padding-bottom: 20px;
@@ -50,15 +47,12 @@ a {
 	position: relative;
 	overflow:	hidden;
 	min-height: calc( 100vh - 41px );
-	/* background-color: #111213; */
-	tex
 }
 .section-details {
 	position: relative;
 	overflow:	hidden;
 	min-height: calc( 100vh - 41px - 53px );
 	/* background-color: #111213; */
-	tex
 }
 .section-hero .typography-title-elevated {
 	font-size: 2.5rem;
