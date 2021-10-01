@@ -86,45 +86,6 @@ const dismiss = (element) => {
 
 map.region = BayArea;
 
-// Import GeoJSON data with the shape of the states and their population.
-// Disabled as of october 12th due to pge restoring power after PSPC
-
-// mapkit.importGeoJSON("/vendor/pge.geojson", {
-//     // Some states are represented as MultiPolygons; we transform them into
-//     // a single PolygonOverlay by concatenating the lists of lists of points.
-//     itemForMultiPolygon: function(collection, geoJSON) {
-//         var overlays = collection.getFlattenedItemList();
-//         var points = overlays.reduce(function(points, overlay) {
-//             return points.concat(overlay.points);
-//         }, []);
-//         return new mapkit.PolygonOverlay(points);
-//     },
-//
-//     // After an overlay has been created for a feature (either directly or through
-//     // itemForMultiPolygon above), the properties of the feature are used to add data
-//     // and set the style (especially the fill color) based on population count.
-//     itemForFeature: function(overlay, geoJSON) {
-//
-//         // Add data to the overlay to be shown when it is selected.
-//         overlay.data = {
-//             name: geoJSON.properties.name,
-//         };
-//
-//         overlay.style = new mapkit.Style({
-//             fillOpacity: 0.15,
-//             lineWidth: 1,
-//             fillColor: "#fa9fb5"
-//         });
-//
-//         return overlay;
-//     },
-//
-//     // When all the data has been imported, we can show the results.
-//     geoJSONDidComplete: function(overlays) {
-//         map.addItems(overlays);
-//     }
-// });
-
 //Define Search app
 function SearchApp() {
   this.search = new mapkit.Search({
