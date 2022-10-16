@@ -2,7 +2,6 @@
 const fs = require('fs');
 
 // Load third-party requirements
-const bodyParser = require('body-parser');
 const express = require('express');
 
 // Set base directory
@@ -18,8 +17,6 @@ app.set('trust proxy', 1)
 app.use(express.static(path + '/public'));
 app.set('view engine', 'ejs');
 app.set('views', path + '/views');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // Load routes

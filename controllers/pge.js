@@ -1,4 +1,4 @@
-const request = require("request");
+const http = require('https');
 
 const reqHeaders = {
   Host: "ewapi.cloudapi.pge.com",
@@ -29,38 +29,24 @@ exports.check = (req, res) => {
   const dataString = encodeURI(`${stn} ${str} ${cty} ${zip}`);
   // console.log(dataString);
 
+  // const options = {
+  //   method: "GET",
+  //   url: `https://ewapi.cloudapi.pge.com/single-address-outages?address=${dataString}`,
+  //   headers: reqHeaders,
+  // };
+
+  
+
   const options = {
     method: "GET",
-    url: `https://ewapi.cloudapi.pge.com/single-address-outages?address=${dataString}`,
+    host: "ewapi.cloudapi.pge.com",
+    path: `/single-address-outages?address=${dataString}`,
     headers: reqHeaders,
   };
 
-  request(options, (error, response, body) => {
-    if (body && response.statusCode == 200) {
-      // Take First Object
-      let rawData = JSON.parse(body)[0];
-      let message;
-      let statusColor;
+  const request = http.request(options, (response) => {
 
-      if (!rawData || rawData.prem_state !== "CA") {
-        statusColor = "#ffae00";
-        message = "Unable to Load PG&E API for this Address";
-      } else {
-        let outage = rawData.sp_meter_transformer_details[0].current_outage;
-        if (outage.last_update) {
-          message = `Outage Reported. PG&E Status: ${
-            outage.crew_current_status || "Unknown"
-          }`;
-          statusColor = "#f23050";
-        } else {
-          message = "No Outage Reported by PG&E";
-          statusColor = "#30f27a";
-        }
-      }
-
-      res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify({ string: message, color: statusColor }));
-    } else {
+    if (response.statusCode !== 200) {
       res.setHeader("Content-Type", "application/json");
       res.end(
         JSON.stringify({
@@ -68,6 +54,53 @@ exports.check = (req, res) => {
           color: "#0d97ff",
         })
       );
+      return;
     }
+
+    response.setEncoding('utf8');
+    let body = ""
+    response.on('data', (chunk) => {
+       body+= chunk
+    });
+    response.on('end', () => {
+      // Take First Object
+      let rawData = JSON.parse(body)[0];
+      let message;
+      let statusColor;
+ 
+       if (!rawData || rawData.prem_state !== "CA") {
+         statusColor = "#ffae00";
+         message = "Unable to Load PG&E API for this Address";
+       } else {
+         let outage = rawData.sp_meter_transformer_details[0].current_outage;
+         if (outage.last_update) {
+           message = `Outage Reported. PG&E Status: ${
+             outage.crew_current_status || "Unknown"
+           }`;
+           statusColor = "#f23050";
+         } else {
+           message = "No Outage Reported by PG&E";
+           statusColor = "#30f27a";
+         }
+       }
+ 
+       res.setHeader("Content-Type", "application/json");
+       res.end(JSON.stringify({ string: message, color: statusColor }));
+    })
+
   });
+  
+  request.on('error', (e) => {
+    console.error(`Unable to check PGE API with request: ${e.message}`);
+    res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          string: "PG&E Error: Unable to check power outage status",
+          color: "#0d97ff",
+        })
+      );
+  });
+  
+  request.end();
+
 };
