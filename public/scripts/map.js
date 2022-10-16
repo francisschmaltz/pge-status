@@ -99,6 +99,48 @@ function SearchApp() {
   this.autocompleteList = document.getElementById("autocomplete-list");
 
   this.annotations = [];
+
+  console.log(window.location.href)
+  if (window.location.href.match(/\?./)) {
+    let rawParams = window.location.href.split('?')[1].split('&')
+    let params = {}
+
+    rawParams.forEach(paramKV => {
+      let kvPair = paramKV.split('=');
+
+      params[kvPair[0]] = decodeURI(kvPair[1])
+    })
+
+    console.log(params)
+
+    var initGeocoder = new mapkit.Geocoder({
+      language: "en-US",
+      getsUserLocation: false
+    });
+
+    // Preform the lookup func('lookup str', callback()=>{}, options?)
+    initGeocoder.lookup(`${params.place} ${params.lat}, ${params.lon}`, (err, geocodeData) => {
+      console.log(geocodeData.results[0])
+      let inferedPlaceObj = {places: geocodeData.results}
+
+      // Create a coordinate region named myRegion.
+      const initCord = new mapkit.Coordinate(Number.parseFloat(params.lat), Number.parseFloat(params.lon)); // latitude, longitude
+      const initSpan = new mapkit.CoordinateSpan(.0089, .016); // latitude delta, longitude delta
+      let initRegion = new mapkit.CoordinateRegion(initCord, initSpan);
+
+      // Convert this coordinate region to a bounding region.
+      let initBoundingRegion = initRegion.toBoundingRegion();
+
+      inferedPlaceObj.boundingRegion = initRegion
+
+      console.log('inferedPlaceObj')
+      console.log(inferedPlaceObj)
+      placeDataOnMap(inferedPlaceObj)
+      
+    })
+
+  }
+
 }
 
 SearchApp.prototype = {
@@ -348,9 +390,23 @@ var searchDelegate = {
   },
 
   searchDidComplete: function (data) {
+    console.log('SearchDidComplete Data:')
+    console.log(data)
     searchApp.searchDidComplete(data);
 
-    var self = this;
+    placeDataOnMap(data)
+    
+  },
+
+  searchDidError: function (error) {
+    console.log(error.message);
+  },
+};
+
+const placeDataOnMap = (data) => {
+  console.log('placeDataOnMap')
+  console.log(data)
+  var self = this;
 
     // Remove Previous annotations
     if (map.annotations[0]) {
@@ -365,6 +421,10 @@ var searchDelegate = {
     const addrFull = data.places[0].formattedAddress;
     const addrName = data.places[0].name;
 
+    const uriLocal = encodeURI(`?p=${addrName}&lat=${data.boundingRegion.center.latitude}&lon=${data.boundingRegion.center.longitude}`)
+    history.pushState(null, '', `map${uriLocal}`);
+
+    
     let addressParts = addrFull.split(", ");
 
     // Remove name of place
@@ -478,12 +538,8 @@ var searchDelegate = {
       `/check/?cty=${ctyName}&zip=${zipcode}&lon=${lon}&lat=${lat}&str=${strName}&stn=${streetN}`,
       showMessage
     );
-  },
+}
 
-  searchDidError: function (error) {
-    console.log(error.message);
-  },
-};
 
 var searchApp = new SearchApp();
 

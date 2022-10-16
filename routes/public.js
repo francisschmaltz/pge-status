@@ -20,6 +20,10 @@ router.route("/mkToken").get(mk.token);
 router.route("/map").get((req, res) => {
   res.render("pages/map");
 });
+router.route("/map?*").get((req, res) => {
+  res.render("pages/map");
+});
+
 
 // PG&E external API check
 router.route("/check").get(pge.check);
