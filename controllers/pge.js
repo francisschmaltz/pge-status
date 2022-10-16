@@ -52,6 +52,9 @@ exports.check = (req, res) => {
         JSON.stringify({
           string: "PG&E Error: Unable to check power outage status",
           color: "#0d97ff",
+          glyph: "⁇",
+          glyphColor: "#3F371A"
+          
         })
       );
       return;

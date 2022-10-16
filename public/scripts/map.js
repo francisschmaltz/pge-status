@@ -406,13 +406,14 @@ var searchDelegate = {
       let updatedStatusPin = new mapkit.MarkerAnnotation(
         data.boundingRegion.center,
         {
-          // callout: annotationDelegate,
           title: data.places[0].name,
           subtitle: "PG&E Error: Unable to check power outage status",
           selected: true,
           animates: true,
           color: "#0d97ff",
           callout: calloutDelegate,
+          glyph:"⁇",
+          glyphColor:"#3F371A",
         }
       );
       map.removeAnnotation(map.annotations[0]);
@@ -450,6 +451,7 @@ var searchDelegate = {
       },
     };
     function showMessage() {
+      console.log(JSON.parse(this.responseText))
       let message = JSON.parse(this.responseText).string;
       let color = JSON.parse(this.responseText).color;
       let glyph = JSON.parse(this.responseText).glyph;
