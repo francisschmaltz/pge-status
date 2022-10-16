@@ -52,7 +52,7 @@ a {
 	position: relative;
 	overflow:	hidden;
 	min-height: calc( 100vh - 41px - 53px );
-	/* background-color: #111213; */
+	background-color: #f9fbfc;
 }
 .section-hero .typography-title-elevated {
 	font-size: 2.5rem;
@@ -209,6 +209,9 @@ a {
   body, html {
     background-color: #04070e;
     color: #fafbfc;
+  }
+  .section-details {
+	background-color: #04070e;
   }
   h1,h2,h3,h4, label {
     color: #eaebec !important;
