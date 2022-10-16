@@ -8,7 +8,6 @@ header {
 	-webkit-backdrop-filter: saturate(200%) blur(18px);
 	backdrop-filter: saturate(200%) blur(18px);
 	z-index: 99999;
-  border-bottom: 1px solid rgba(214, 221, 226, 0.72);
 	transition: all 500ms;
 }
 
@@ -24,7 +23,7 @@ header {
   font-size: 18px;
   line-height: 28px;
   letter-spacing: -0.012em;
-  font-weight: 500
+  font-weight: 600
 }
 
 .header-content {
@@ -36,28 +35,42 @@ header {
 
 nav.header-nav {
   height: 52px;
+  display: flex;
 }
 
 ul.header-list {
-  display: inline-block;
-  margin-top: -10px;
   display: inline;
   margin: 0;
   padding: 0;
   list-style: none;
+  align-self: center;
 }
 
 li.header-list-item {
   display: inline-block;
-  padding: 12px 0 8px 6px;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  line-height: 28px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  line-height: 22px;
+  font-weight: 600;
+  font-size: 17px;
+  color: #171819;
+  border-radius: 6px;
+  transition: all 250ms;
+}
+
+li.header-list-item:hover {
+  background-color: rgba(13,151,255,0.12);
 }
 
 li.header-list-item a{
   display: inline-block;
-  padding-left: 16px;
+  font-weight: 500;
+  text-decoration: none;
+}
+li.header-list-item a:hover{
+  text-decoration: none;
 }
 li.header-list-item .authd {
 	opacity: .6;
@@ -71,7 +84,6 @@ li.header-list-item .authd {
 @media (prefers-color-scheme: dark) {
 	header {
 		background-color: rgba(0,0,0,.55);
-		border-bottom: 1px solid #333333
 	}
 }
 .theme-dark 	header {

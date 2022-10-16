@@ -430,30 +430,42 @@ var searchDelegate = {
     }
 
     var calloutDelegate = {
-      calloutRightAccessoryForAnnotation: function () {
-        var accessoryViewRight = document.createElement("a");
-        accessoryViewRight.className = "right-accessory-view";
-        accessoryViewRight.href = "https://pge.com/";
-        accessoryViewRight.target = "_blank";
-        accessoryViewRight.appendChild(document.createTextNode("PG&E↗"));
+      calloutLeftAccessoryForAnnotation: function (annotation) {
 
-        return accessoryViewRight;
+        var accessoryViewLeft = document.createElement("div");
+        accessoryViewLeft.className = "right-accessory-view"
+
+        var glyph = accessoryViewLeft.appendChild(document.createElement("p"));
+        glyph.textContent = annotation.glyphText
+        glyph.style.backgroundColor = annotation.color
+        glyph.style.color = annotation.glyphColor
+        glyph.style.fontWeight = "600"
+        glyph.style.borderRadius = "500px"
+        glyph.style.height = "32px"
+        glyph.style.width = "32px"
+        glyph.style.fontSize = "22px"
+
+
+        return accessoryViewLeft;
       },
     };
     function showMessage() {
       let message = JSON.parse(this.responseText).string;
       let color = JSON.parse(this.responseText).color;
+      let glyph = JSON.parse(this.responseText).glyph;
+      let glyphColor = JSON.parse(this.responseText).glyphColor;
       _paq.push(["trackEvent", "map search", "result", message]);
       let updatedStatusPin = new mapkit.MarkerAnnotation(
         data.boundingRegion.center,
         {
-          // callout: annotationDelegate,
           title: data.places[0].name,
           subtitle: message,
           selected: true,
           animates: true,
           color: color,
           callout: calloutDelegate,
+          glyphText: glyph,
+          glyphColor: glyphColor
         }
       );
       map.removeAnnotation(map.annotations[0]);

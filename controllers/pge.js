@@ -67,10 +67,14 @@ exports.check = (req, res) => {
       let rawData = JSON.parse(body)[0];
       let message;
       let statusColor;
+      let glyph;
+      let glyphColor;
  
        if (!rawData || rawData.prem_state !== "CA") {
-         statusColor = "#ffae00";
+         statusColor = "#DFBA70";
          message = "Unable to Load PG&E API for this Address";
+         glyph ="⁇"
+         glyphColor = "#3F371A"
        } else {
          let outage = rawData.sp_meter_transformer_details[0].current_outage;
          if (outage.last_update) {
@@ -78,14 +82,18 @@ exports.check = (req, res) => {
              outage.crew_current_status || "Unknown"
            }`;
            statusColor = "#f23050";
+           glyph = "⚠️"
+           glyphColor = "#3A0C02"
          } else {
            message = "No Outage Reported by PG&E";
            statusColor = "#30f27a";
+           glyph = "✓"
+           glyphColor = "#1A3F24"
          }
        }
  
        res.setHeader("Content-Type", "application/json");
-       res.end(JSON.stringify({ string: message, color: statusColor }));
+       res.end(JSON.stringify({ string: message, color: statusColor, glyph: glyph, glyphColor: glyphColor}));
     })
 
   });
@@ -97,6 +105,9 @@ exports.check = (req, res) => {
         JSON.stringify({
           string: "PG&E Error: Unable to check power outage status",
           color: "#0d97ff",
+          glyph: "⁇",
+          glyphColor: "#3F371A"
+
         })
       );
   });
