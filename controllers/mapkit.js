@@ -1,12 +1,29 @@
-require("dotenv").config();
-
+const path = require("path");
 const fs = require("fs");
+const dotenv = require("dotenv");
+const URLConstructor = require("url").URL;
+
+// Load the deployment file from the app directory, not PM2's working directory.
+// The checked-in .env is ignored by Git and remains server-local configuration.
+const envPath = path.join(__dirname, "../.env");
+let loadedEnv;
+try {
+  loadedEnv = dotenv.parse(fs.readFileSync(envPath));
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
+  loadedEnv = {};
+}
+
+// Make the app-local .env authoritative even with older dotenv versions or a
+// stale WEBURL inherited from PM2.
+Object.assign(process.env, loadedEnv);
+
 const jwt = require("jsonwebtoken");
 
 const genToken = () => {
   const mkKey = process.env.MAPKEY;
   const teamID = process.env.TEAMID;
-  const configuredOrigin = process.env.WEBURL;
+  const configuredOrigin = String(process.env.WEBURL || "").trim();
 
   if (!mkKey || !teamID || !configuredOrigin) {
     throw new Error("MapKit token configuration is incomplete");
@@ -14,11 +31,11 @@ const genToken = () => {
 
   let origin;
   try {
-    const parsedOrigin = new URL(configuredOrigin);
-    if (parsedOrigin.protocol !== "https:" || parsedOrigin.pathname !== "/" || parsedOrigin.search || parsedOrigin.hash) {
+    const parsedOrigin = new URLConstructor(configuredOrigin);
+    if (parsedOrigin.protocol !== "https:" || parsedOrigin.pathname !== "/" || parsedOrigin.search || parsedOrigin.hash || parsedOrigin.username || parsedOrigin.password) {
       throw new Error("WEBURL must be an HTTPS origin");
     }
-    origin = parsedOrigin.origin;
+    origin = parsedOrigin.protocol + "//" + parsedOrigin.host;
   } catch (error) {
     throw new Error("WEBURL must be an HTTPS origin");
   }
