@@ -1,8 +1,8 @@
 const https = require("https");
 
 const PGE_HOST = "ewapi.cloudapi.pge.com";
-const REQUEST_TIMEOUT_MS = 10_000;
-const MAX_RESPONSE_BYTES = 1_000_000;
+const REQUEST_TIMEOUT_MS = 10000;
+const MAX_RESPONSE_BYTES = 1000000;
 const MAX_FIELD_LENGTH = 256;
 
 const reqHeaders = {
@@ -101,7 +101,8 @@ exports.check = (req, res) => {
             glyph = "⁇";
             glyphColor = "#3F371A";
           } else {
-            const outage = rawData.sp_meter_transformer_details?.[0]?.current_outage;
+            const details = rawData.sp_meter_transformer_details;
+            const outage = details && details[0] && details[0].current_outage;
             if (!outage) throw new Error("Unexpected PG&E response shape");
 
             if (outage.last_update) {

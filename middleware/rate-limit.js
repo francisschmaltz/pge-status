@@ -5,7 +5,7 @@ const cleanupInterval = setInterval(() => {
   for (const [key, bucket] of buckets) {
     if (bucket.resetAt <= now) buckets.delete(key);
   }
-}, 60_000);
+}, 60000);
 
 cleanupInterval.unref();
 
