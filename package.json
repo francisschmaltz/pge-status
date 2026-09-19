@@ -9,9 +9,25 @@
   "author": "Francis Schmaltz <francis@yaboiii.com>",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^8.1.0",
-    "ejs": "^3.1.8",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1"
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "^4.22.3",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "overrides": {
+    "ejs": {
+      "jake": {
+        "filelist": {
+          "minimatch": {
+            ".": "5.1.8",
+            "brace-expansion": "2.1.4"
+          }
+        },
+        "minimatch": {
+          ".": "3.1.4",
+          "brace-expansion": "1.1.18"
+        }
+      }
+    }
   }
 }

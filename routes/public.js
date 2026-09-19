@@ -6,6 +6,7 @@ const mk = require("../controllers/mapkit");
 const pge = require("../controllers/pge");
 
 const error = require("../controllers/error");
+const rateLimit = require("../middleware/rate-limit");
 
 const router = express.Router();
 
@@ -16,14 +17,14 @@ router.route("/").get((req, res) => {
 });
 
 // Apple MapKit
-router.route("/mkToken").get(mk.token);
+router.route("/mkToken").get(rateLimit({ key: "mkToken", limit: 60, windowMs: 60 * 1000 }), mk.token);
 router.route("/map").get((req, res) => {
   res.render("pages/map");
 });
 
 // PG&E external API check
-router.route("/check").get(pge.check);
-router.route("/check/*").get(pge.check);
+router.route("/check").get(rateLimit({ key: "check", limit: 30, windowMs: 60 * 1000 }), pge.check);
+router.route("/check/*").get(rateLimit({ key: "check", limit: 30, windowMs: 60 * 1000 }), pge.check);
 
 // Error routes
 router.route("/404").get(error.display);
