@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const fs = require("fs");
-const url = require("url");
 
 const jwt = require("jsonwebtoken");
 
@@ -16,19 +15,11 @@ const genToken = () => {
 
   let origin;
   try {
-    const parsedOrigin = url.parse(configuredOrigin);
-    if (
-      parsedOrigin.protocol !== "https:" ||
-      !parsedOrigin.hostname ||
-      parsedOrigin.auth ||
-      parsedOrigin.port ||
-      (parsedOrigin.pathname && parsedOrigin.pathname !== "/") ||
-      parsedOrigin.search ||
-      parsedOrigin.hash
-    ) {
+    const originMatch = /^https:\/\/([a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*?)\/?$/i.exec(configuredOrigin);
+    if (!originMatch) {
       throw new Error("WEBURL must be an HTTPS origin");
     }
-    origin = parsedOrigin.protocol + "//" + parsedOrigin.hostname;
+    origin = "https://" + originMatch[1].toLowerCase();
   } catch (error) {
     throw new Error("WEBURL must be an HTTPS origin");
   }
