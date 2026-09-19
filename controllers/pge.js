@@ -89,7 +89,9 @@ exports.check = (req, res) => {
       response.on("end", () => {
         if (settled) return;
         try {
-          const rawData = JSON.parse(body)[0];
+          const parsed = JSON.parse(body);
+          const records = Array.isArray(parsed) ? parsed : parsed && parsed.results;
+          const rawData = Array.isArray(records) ? records[0] : null;
           let message;
           let statusColor;
           let glyph;
