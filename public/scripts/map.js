@@ -86,21 +86,27 @@ const dismiss = (element) => {
 
 map.region = BayArea;
 
-mapkit.importGeoJSON("/psps.geojson", {
-  styleForOverlay: function () {
-    return new mapkit.Style({
-      fillColor: "#f5a623",
-      fillOpacity: 0.2,
-      strokeColor: "#d98900",
-      lineWidth: 1,
-    });
-  },
-  geoJSONDidComplete: function (overlays) {
-    if (!overlays.getFlattenedItemList().length) return;
-    map.addItems(overlays);
+fetch("/psps-status")
+  .then((res) => res.json())
+  .then((status) => {
+    if (!status.active) return;
     document.getElementById("psps-alert").style.display = "block";
-  },
-});
+    mapkit.importGeoJSON("/psps.geojson", {
+      styleForOverlay: function () {
+        return new mapkit.Style({
+          fillColor: "#f5a623",
+          fillOpacity: 0.2,
+          strokeColor: "#d98900",
+          lineWidth: 1,
+        });
+      },
+      geoJSONDidComplete: function (overlays) {
+        if (!overlays.getFlattenedItemList().length) return;
+        map.addItems(overlays);
+      },
+    });
+  })
+  .catch((error) => {});
 
 //Define Search app
 function SearchApp() {

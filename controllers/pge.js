@@ -201,6 +201,34 @@ const download = (path) => new Promise((resolve, reject) => {
 
 let pspsGeoJSON;
 let pspsUpdated = 0;
+let pspsActive;
+let pspsStatusUpdated = 0;
+
+exports.pspsStatus = async (req, res) => {
+  if (pspsActive === undefined || Date.now() - pspsStatusUpdated >= 3 * 60 * 60 * 1000) {
+    try {
+      const events = JSON.parse((await download("/forecasted_outages/psps_event_package_check.json")).toString()).psps_events.events;
+      let active = false;
+      for (const event of events) {
+        if (event.active_files.map) {
+          active = true;
+          break;
+        }
+      }
+      pspsActive = active;
+      pspsStatusUpdated = Date.now();
+    } catch (error) {
+      console.error(`Unable to check PG&E PSPS status: ${error.message}`);
+      if (pspsActive !== undefined) {
+        res.set("Cache-Control", "public, max-age=10800").json({ active: pspsActive });
+        return;
+      }
+      res.status(502).set("Cache-Control", "no-store").json({ error: "Unable to check PG&E PSPS status" });
+      return;
+    }
+  }
+  res.set("Cache-Control", "public, max-age=10800").json({ active: pspsActive });
+};
 
 exports.psps = async (req, res) => {
   if (!pspsGeoJSON || Date.now() - pspsUpdated >= 30 * 60 * 1000) {

@@ -25,6 +25,7 @@ router.route("/map").get((req, res) => {
 // PG&E external API check
 router.route("/check").get(rateLimit({ key: "check", limit: 30, windowMs: 60 * 1000 }), pge.check);
 router.route("/check/*").get(rateLimit({ key: "check", limit: 30, windowMs: 60 * 1000 }), pge.check);
+router.route("/psps-status").get(rateLimit({ key: "pspsStatus", limit: 30, windowMs: 60 * 1000 }), pge.pspsStatus);
 router.route("/psps.geojson").get(rateLimit({ key: "psps", limit: 30, windowMs: 60 * 1000 }), pge.psps);
 
 // Error routes
