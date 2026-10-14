@@ -33,7 +33,7 @@ const sendError = (res) => {
     .json({
       string: "PG&E Error: Unable to check power outage status",
       color: "#0d97ff",
-      glyph: "⁇",
+      status: "error",
       glyphColor: "#3F371A",
     });
 };
@@ -94,13 +94,13 @@ exports.check = (req, res) => {
           const rawData = Array.isArray(records) ? records[0] : null;
           let message = "";
           let statusColor;
-          let glyph;
+          let status;
           let glyphColor;
 
           if (!rawData || rawData.prem_state !== "CA") {
             statusColor = "#DFBA70";
+            status = "error";
             message = "Unable to Load PG&E API for this Address";
-            glyph = "⁇";
             glyphColor = "#3F371A";
           } else {
             const details = rawData.sp_meter_transformer_details;
@@ -121,15 +121,15 @@ exports.check = (req, res) => {
             if (outage) {
               message = `Current outage: PG&E Status: ${outage.crew_current_status || "Unknown"}`;
               statusColor = "#f23050";
-              glyph = "!";
-              glyphColor = "#FFDC5D";
+              status = "current";
+              glyphColor = "#1A3F24";
             }
             if (forecast) {
               if (message) message += "\n";
               else {
                 statusColor = "#DFBA70";
-                glyph = "🕒";
-                glyphColor = "#3F371A";
+                status = "future";
+                glyphColor = "#1A3F24";
               }
               message += "Future outage";
               if (forecast.stage) message += `: ${forecast.stage}`;
@@ -148,7 +148,7 @@ exports.check = (req, res) => {
             if (!message) {
               message = "No Outage Reported by PG&E";
               statusColor = "#30f27a";
-              glyph = "✓";
+              status = "clear";
               glyphColor = "#1A3F24";
             }
           }
@@ -157,7 +157,7 @@ exports.check = (req, res) => {
           res.set("Cache-Control", "no-store").json({
             string: message,
             color: statusColor,
-            glyph,
+            status,
             glyphColor,
           });
         } catch (error) {

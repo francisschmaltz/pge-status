@@ -438,7 +438,7 @@ var searchDelegate = {
           animates: true,
           color: "#0d97ff",
           callout: calloutDelegate,
-          glyph:"⁇",
+          glyphText:"??",
           glyphColor:"#3F371A",
         }
       );
@@ -479,10 +479,11 @@ var searchDelegate = {
         accessoryViewLeft.style.marginLeft = "1px"
 
         var glyph = accessoryViewLeft.appendChild(document.createElement("div"));
-        if (annotation.glyphImage) {
-          var clock = glyph.appendChild(document.createElement("img"));
-          clock.src = "images/clock.svg";
-          clock.style.width = "24px";
+        if (annotation.icon) {
+          var icon = glyph.appendChild(document.createElement("img"));
+          icon.src = annotation.icon
+          icon.style.width = "24px"
+          icon.style.height = "24px"
         } else glyph.textContent = annotation.glyphText
         glyph.style.backgroundColor = annotation.color
         glyph.style.color = annotation.glyphColor
@@ -501,22 +502,28 @@ var searchDelegate = {
     function showMessage() {
       const response = JSON.parse(this.responseText);
       let message = response.string;
-      let color = response.color;
-      let glyph = response.glyph;
-      let glyphColor = response.glyphColor;
       _paq.push(["trackEvent", "map search", "result", message]);
-      let options = {
+      let updatedStatusPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, {
         title: data.places[0].name,
         subtitle: message,
         selected: true,
         animates: true,
-        color: color,
+        color: response.color,
         callout: calloutDelegate,
-        glyphColor: glyphColor
-      };
-      if (glyph === "🕒") options.glyphImage = { 1: "images/clock.svg" };
-      else options.glyphText = glyph;
-      let updatedStatusPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, options);
+        glyphColor: response.glyphColor
+      });
+      if (response.status === "current") {
+        updatedStatusPin.icon = "images/exclamation.svg";
+      } else if (response.status === "future") {
+        updatedStatusPin.icon = "images/clock.svg";
+      } else if (response.status === "clear") {
+        updatedStatusPin.icon = "images/check.svg";
+      } else {
+        updatedStatusPin.glyphText = "??";
+      }
+      if (updatedStatusPin.icon) {
+        updatedStatusPin.glyphImage = { 1: updatedStatusPin.icon };
+      }
       map.removeAnnotation(map.annotations[0]);
       map.addAnnotation(updatedStatusPin);
     }
