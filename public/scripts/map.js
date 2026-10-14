@@ -203,12 +203,6 @@ SearchApp.prototype = {
   // displayAutocomplete generates a search autocomplete menu based off of the
   // autocomplete data returned by the server.
   displayAutocomplete: function (data) {
-    _paq.push([
-      "trackEvent",
-      "map search",
-      "autocomplete",
-      "auto complete returned search result",
-    ]);
     this.autocompleteList.innerHTML = "";
 
     data.results.forEach(function (result, i) {
@@ -268,12 +262,6 @@ SearchApp.prototype = {
         new mapkit.CoordinateSpan(1, 1)
       );
     }
-    _paq.push([
-      "trackEvent",
-      "map search",
-      "selected",
-      "search result selected",
-    ]);
     this.requestId = this.search.search(query, searchDelegate, {
       region: SearchResultField,
     });
@@ -428,7 +416,6 @@ var searchDelegate = {
     function xhrError() {
       console.error(this.statusText);
 
-      _paq.push(["trackEvent", "map search", "result", this.statusText]);
       let updatedStatusPin = new mapkit.MarkerAnnotation(
         data.boundingRegion.center,
         {
@@ -506,7 +493,6 @@ var searchDelegate = {
     function showMessage() {
       const response = JSON.parse(this.responseText);
       let message = response.string;
-      _paq.push(["trackEvent", "map search", "result", message]);
       let updatedStatusPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, {
         title: data.places[0].name,
         subtitle: message,
