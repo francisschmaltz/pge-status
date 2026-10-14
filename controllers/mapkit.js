@@ -36,21 +36,10 @@ const derToJose = (signature) => {
 const genToken = () => {
   const mkKey = process.env.MAPKEY;
   const teamID = process.env.TEAMID;
-  const configuredOrigin = String(process.env.WEBURL || "").trim();
+  const origin = process.env.WEBURL;
 
-  if (!mkKey || !teamID || !configuredOrigin) {
+  if (!mkKey || !teamID || !origin) {
     throw new Error("MapKit token configuration is incomplete");
-  }
-
-  let origin;
-  try {
-    const originMatch = /^https:\/\/([a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*?)\/?$/i.exec(configuredOrigin);
-    if (!originMatch) {
-      throw new Error("WEBURL must be an HTTPS origin");
-    }
-    origin = "https://" + originMatch[1].toLowerCase();
-  } catch (error) {
-    throw new Error("WEBURL must be an HTTPS origin");
   }
 
   const privKey = fs.readFileSync(__basedir + "/mapkit.p8");

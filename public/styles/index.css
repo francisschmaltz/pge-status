@@ -176,22 +176,35 @@ a {
 	left: 12px;
 	width: calc(100% - 24px);
 	max-width: 500px;
+	max-height: calc(100vh - 84px);
+	display: flex;
+	flex-direction: column;
 }
 #originInput {
+	flex-shrink: 0;
+	margin-bottom: 0;
 	background: rgba(255, 255, 255, 0.90);
 	-webkit-backdrop-filter: saturate(200%) blur(18px);
 	backdrop-filter: saturate(200%) blur(18px);
 }
 #autocomplete-box {
 	display: block;
-	overflow-y: scroll;
+	height: 0;
+	min-height: 0;
+	overflow-y: auto;
 	max-height: calc(100vh - 160px);
+	transition: height 250ms ease, margin-top 250ms ease;
 	border-radius: 6px;
 	color: #111111;
 	background: rgba(255, 255, 255, 0.90);
 	-webkit-backdrop-filter: saturate(200%) blur(18px);
 	backdrop-filter: saturate(200%) blur(18px);
 	box-shadow: 0 2px 12px rgba(0,0,0,.15);
+}
+#psps-alert {
+	flex-shrink: 0;
+	margin-top: 8px;
+	margin-bottom: 12px;
 }
 #autocomplete-list li {
 	transition: all 250ms ease;

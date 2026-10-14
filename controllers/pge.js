@@ -61,7 +61,7 @@ exports.check = (req, res) => {
     {
       method: "GET",
       host: PGE_HOST,
-      path: `/single-address-outages?address=${address}`,
+      path: `/single-address-outages?v=2&address=${address}`,
       headers: reqHeaders,
       timeout: REQUEST_TIMEOUT_MS,
       // PG&E currently presents a self-signed certificate. Keep this exception
@@ -92,7 +92,7 @@ exports.check = (req, res) => {
           const parsed = JSON.parse(body);
           const records = Array.isArray(parsed) ? parsed : parsed && parsed.results;
           const rawData = Array.isArray(records) ? records[0] : null;
-          let message;
+          let message = "";
           let statusColor;
           let glyph;
           let glyphColor;
@@ -104,15 +104,48 @@ exports.check = (req, res) => {
             glyphColor = "#3F371A";
           } else {
             const details = rawData.sp_meter_transformer_details;
-            const outage = details && details[0] && details[0].current_outage;
-            if (!outage) throw new Error("Unexpected PG&E response shape");
+            if (!Array.isArray(details) || !details.length) throw new Error("Unexpected PG&E response shape");
+            let outage;
+            let forecast;
 
-            if (outage.last_update) {
-              message = `Outage Reported. PG&E Status: ${outage.crew_current_status || "Unknown"}`;
+            for (const detail of details) {
+              if (detail.current_outage && detail.current_outage.last_update) outage = detail.current_outage;
+              for (const upcoming of detail.forecasted_outages || []) {
+                const start = Date.parse(upcoming.estimated_shut_off_start_dttm);
+                if (start > Date.now() && (!forecast || start < Date.parse(forecast.estimated_shut_off_start_dttm))) {
+                  forecast = upcoming;
+                }
+              }
+            }
+
+            if (outage) {
+              message = `Current outage: PG&E Status: ${outage.crew_current_status || "Unknown"}`;
               statusColor = "#f23050";
-              glyph = "⚠️";
-              glyphColor = "#3A0C02";
-            } else {
+              glyph = "!";
+              glyphColor = "#FFDC5D";
+            }
+            if (forecast) {
+              if (message) message += "\n";
+              else {
+                statusColor = "#DFBA70";
+                glyph = "🕒";
+                glyphColor = "#3F371A";
+              }
+              message += "Future outage";
+              if (forecast.stage) message += `: ${forecast.stage}`;
+              else if (forecast.message_template) message += `: PSPS ${forecast.message_template.replace(/(Single|Multiple)$/, "")}`;
+
+              const time = new Intl.DateTimeFormat("en-US", {
+                timeZone: "America/Los_Angeles", month: "numeric", day: "numeric",
+                hour: "numeric", minute: "2-digit", timeZoneName: "short",
+              });
+              if (forecast.estimated_shut_off_start_dttm) {
+                message += `. Estimated shutoff: ${time.format(new Date(forecast.estimated_shut_off_start_dttm))}`;
+                if (forecast.estimated_shutoff_end_dttm) message += ` - ${time.format(new Date(forecast.estimated_shutoff_end_dttm))}`;
+              }
+              if (forecast.etor) message += `. Estimated restoration: ${time.format(new Date(forecast.etor))}`;
+            }
+            if (!message) {
               message = "No Outage Reported by PG&E";
               statusColor = "#30f27a";
               glyph = "✓";
@@ -141,4 +174,57 @@ exports.check = (req, res) => {
     fail();
   });
   request.end();
+};
+
+const download = (path) => new Promise((resolve, reject) => {
+  const request = https.get({
+    host: "pgealerts-downloads.alerts.pge.com", path, timeout: REQUEST_TIMEOUT_MS,
+  }, (response) => {
+    if (response.statusCode !== 200) {
+      response.resume();
+      reject(new Error(`PG&E download returned ${response.statusCode}`));
+      return;
+    }
+    const chunks = [];
+    let size = 0;
+    response.on("data", (chunk) => {
+      size += chunk.length;
+      if (size > 30000000) request.destroy(new Error("PG&E download exceeded size limit"));
+      else chunks.push(chunk);
+    });
+    response.on("end", () => resolve(Buffer.concat(chunks)));
+    response.on("error", reject);
+  });
+  request.on("timeout", () => request.destroy(new Error("PG&E download timed out")));
+  request.on("error", reject);
+});
+
+let pspsGeoJSON;
+let pspsUpdated = 0;
+
+exports.psps = async (req, res) => {
+  if (!pspsGeoJSON || Date.now() - pspsUpdated >= 30 * 60 * 1000) {
+    try {
+      const shp = (await import("shpjs")).default;
+      const geojson = { type: "FeatureCollection", features: [] };
+
+      for (const event of JSON.parse((await download("/forecasted_outages/psps_event_package_check.json")).toString()).psps_events.events) {
+        if (!event.active_files.map) continue;
+        // PG&E prefixes the map ZIP filename with "z - " in public_sync.
+        let polygons = await shp(await download(`/public_sync/z%20-%20${encodeURIComponent(event.active_files.map)}`));
+        if (!Array.isArray(polygons)) polygons = [polygons];
+        for (const polygon of polygons) {
+          for (const feature of polygon.features) geojson.features.push(feature);
+        }
+      }
+
+      pspsGeoJSON = geojson;
+      pspsUpdated = Date.now();
+    } catch (error) {
+      console.error(`Unable to load PG&E PSPS areas: ${error.message}`);
+      res.json({ type: "FeatureCollection", features: [] });
+      return;
+    }
+  }
+  res.set("Cache-Control", "public, max-age=1800").json(pspsGeoJSON);
 };

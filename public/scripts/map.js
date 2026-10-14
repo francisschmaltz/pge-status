@@ -86,6 +86,22 @@ const dismiss = (element) => {
 
 map.region = BayArea;
 
+mapkit.importGeoJSON("/psps.geojson", {
+  styleForOverlay: function () {
+    return new mapkit.Style({
+      fillColor: "#f5a623",
+      fillOpacity: 0.2,
+      strokeColor: "#d98900",
+      lineWidth: 1,
+    });
+  },
+  geoJSONDidComplete: function (overlays) {
+    if (!overlays.getFlattenedItemList().length) return;
+    map.addItems(overlays);
+    document.getElementById("psps-alert").style.display = "block";
+  },
+});
+
 //Define Search app
 function SearchApp() {
   this.search = new mapkit.Search({
@@ -133,6 +149,7 @@ SearchApp.prototype = {
   // autocomplete result, and closes the autocomplete menu.
   handleSearchKeyUpEvent: function (event) {
     var query = event.target.value.trim();
+    if (event.keyCode !== 38 && event.keyCode !== 40) clearTimeout(this.searchTimeout);
     switch (event.keyCode) {
       case 13:
         // The return key was pressed, and a search should be performed.
@@ -174,9 +191,9 @@ SearchApp.prototype = {
           // `autocompleteDidComplete` and `autocompleteDidError` methods
           // is sent as a parameter to `search.autocomplete()`.
           // A function can also be used.
-          this.search.autocomplete(query, searchDelegate, {
-            region: SearchArea,
-          });
+          this.searchTimeout = setTimeout(() => {
+            this.search.autocomplete(query, searchDelegate, { region: SearchArea });
+          }, 250);
         } else {
           this.shouldShowAutocomplete(false);
         }
@@ -241,13 +258,16 @@ SearchApp.prototype = {
     // displayed map region.
 
     // Create new search region to prevent results from not matching auto complete
-    let SearchResultField = new mapkit.CoordinateRegion(
-      new mapkit.Coordinate(
-        query.coordinate.latitude,
-        query.coordinate.longitude
-      ),
-      new mapkit.CoordinateSpan(1, 1)
-    );
+    let SearchResultField = SearchArea;
+    if (query.coordinate) {
+      SearchResultField = new mapkit.CoordinateRegion(
+        new mapkit.Coordinate(
+          query.coordinate.latitude,
+          query.coordinate.longitude
+        ),
+        new mapkit.CoordinateSpan(1, 1)
+      );
+    }
     _paq.push([
       "trackEvent",
       "map search",
@@ -273,7 +293,13 @@ SearchApp.prototype = {
   // autocomplete results.
 
   shouldShowAutocomplete: function (value) {
-    this.autocompleteBox.style.display = value ? "block" : "none";
+    if (value) {
+      this.autocompleteBox.style.height = this.autocompleteList.scrollHeight + "px";
+      this.autocompleteBox.style.marginTop = "8px";
+    } else {
+      this.autocompleteBox.style.height = "0";
+      this.autocompleteBox.style.marginTop = "0";
+    }
     if (!value) {
       this.removeDisplayedAnnotations();
     }
@@ -431,13 +457,33 @@ var searchDelegate = {
     }
 
     var calloutDelegate = {
+      calloutContentForAnnotation: function (annotation) {
+        var content = document.createElement("div");
+        content.style.width = "360px";
+        content.style.maxWidth = "calc(100vw - 120px)";
+        content.style.marginLeft = "-10px";
+        content.style.whiteSpace = "pre-line";
+        var title = content.appendChild(document.createElement("div"));
+        title.style.fontWeight = "500";
+        title.textContent = annotation.title;
+        var subtitle = content.appendChild(document.createElement("div"));
+        subtitle.style.fontSize = "13px";
+        subtitle.style.color = "#c6c6c6";
+        subtitle.textContent = annotation.subtitle;
+        return content;
+      },
       calloutLeftAccessoryForAnnotation: function (annotation) {
 
         var accessoryViewLeft = document.createElement("div");
         accessoryViewLeft.className = "right-accessory-view"
+        accessoryViewLeft.style.marginLeft = "1px"
 
-        var glyph = accessoryViewLeft.appendChild(document.createElement("p"));
-        glyph.textContent = annotation.glyphText
+        var glyph = accessoryViewLeft.appendChild(document.createElement("div"));
+        if (annotation.glyphImage) {
+          var clock = glyph.appendChild(document.createElement("img"));
+          clock.src = "images/clock.svg";
+          clock.style.width = "24px";
+        } else glyph.textContent = annotation.glyphText
         glyph.style.backgroundColor = annotation.color
         glyph.style.color = annotation.glyphColor
         glyph.style.fontWeight = "600"
@@ -445,31 +491,32 @@ var searchDelegate = {
         glyph.style.height = "32px"
         glyph.style.width = "32px"
         glyph.style.fontSize = "22px"
+        glyph.style.display = "grid"
+        glyph.style.placeItems = "center"
 
 
         return accessoryViewLeft;
       },
     };
     function showMessage() {
-      console.log(JSON.parse(this.responseText))
-      let message = JSON.parse(this.responseText).string;
-      let color = JSON.parse(this.responseText).color;
-      let glyph = JSON.parse(this.responseText).glyph;
-      let glyphColor = JSON.parse(this.responseText).glyphColor;
+      const response = JSON.parse(this.responseText);
+      let message = response.string;
+      let color = response.color;
+      let glyph = response.glyph;
+      let glyphColor = response.glyphColor;
       _paq.push(["trackEvent", "map search", "result", message]);
-      let updatedStatusPin = new mapkit.MarkerAnnotation(
-        data.boundingRegion.center,
-        {
-          title: data.places[0].name,
-          subtitle: message,
-          selected: true,
-          animates: true,
-          color: color,
-          callout: calloutDelegate,
-          glyphText: glyph,
-          glyphColor: glyphColor
-        }
-      );
+      let options = {
+        title: data.places[0].name,
+        subtitle: message,
+        selected: true,
+        animates: true,
+        color: color,
+        callout: calloutDelegate,
+        glyphColor: glyphColor
+      };
+      if (glyph === "🕒") options.glyphImage = { 1: "images/clock.svg" };
+      else options.glyphText = glyph;
+      let updatedStatusPin = new mapkit.MarkerAnnotation(data.boundingRegion.center, options);
       map.removeAnnotation(map.annotations[0]);
       map.addAnnotation(updatedStatusPin);
     }
