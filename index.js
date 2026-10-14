@@ -29,12 +29,9 @@ app.set('views', path + '/views');
 const publicRoutes = require(path + '/routes/public.js');
 app.use('/', publicRoutes);
 
-
-// Fallback route for 404
-app.get('*', function(req, res){
-  console.log('error');
-  res.redirect('/404');
-});
+const error = require(path + '/controllers/error.js');
+app.use(error.notFound);
+app.use(error.serverError);
 
 // Load app
 app.listen(port, () => console.log(`App listening on port ${port}!`))

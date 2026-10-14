@@ -10,27 +10,34 @@ const httpCodes = {
 
 }
 
-exports.display = (req, res) => {
-  var code;
-  let currentURL = req.url.replace(/\//g, '');
-  console.log(currentURL);
-  if (!(currentURL in httpCodes)) {
-    code = '000'
+const renderError = (res, code) => {
+  const [errorStatus, errorMessage] = httpCodes[code];
+  res.status(code === '000' ? 500 : Number(code)).render('pages/error', {
+    errorCode: code,
+    errorStatus,
+    errorMessage,
+  });
+};
 
-  } else {
-    code = currentURL
-  }
-  console.log(code);
-  console.log(httpCodes[code]);
-  res.render('pages/error', {errorCode: code, errorStatus: httpCodes[code][0], errorMessage: httpCodes[code][1]});
-}
+exports.display = (req, res) => {
+  const code = req.path.slice(1).replace(/\/$/, '');
+  renderError(res, Object.prototype.hasOwnProperty.call(httpCodes, code) ? code : '000');
+};
+
+exports.notFound = (req, res) => renderError(res, '404');
+
+exports.serverError = (error, req, res, next) => {
+  console.error(error);
+  if (res.headersSent) return next(error);
+  renderError(res, '500');
+};
 
 exports.details = (req, res) => {
   if(!req.query.m || !req.query.loc) {
-    res.redirect('/404');
+    exports.notFound(req, res);
     return
   }
   let eMessage = req.query.m;
   let location = req.query.loc
-  res.render('pages/error', {errorCode: `location error`, errorStatus: location, errorMessage: eMessage});
+  res.status(502).render('pages/error', {errorCode: `location error`, errorStatus: location, errorMessage: eMessage});
 }
