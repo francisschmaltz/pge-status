@@ -468,7 +468,11 @@ var searchDelegate = {
         title.textContent = annotation.title;
         var subtitle = content.appendChild(document.createElement("div"));
         subtitle.style.fontSize = "13px";
-        subtitle.style.color = "#c6c6c6";
+        if (prefersDark) {
+          subtitle.style.color = "#c6c6c6";
+        } else {
+          subtitle.style.color = "#595959";
+        }
         subtitle.textContent = annotation.subtitle;
         return content;
       },
