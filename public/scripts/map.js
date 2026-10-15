@@ -510,7 +510,7 @@ var searchDelegate = {
       });
       if (response.status === "current") {
         updatedStatusPin.icon = "images/exclamation.svg";
-      } else if (response.status === "future") {
+      } else if (response.status === "future" || response.status === "delayed") {
         updatedStatusPin.icon = "images/clock.svg";
       } else if (response.status === "clear") {
         updatedStatusPin.icon = "images/check.svg";

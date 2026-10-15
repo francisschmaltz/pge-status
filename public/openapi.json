@@ -1,0 +1,53 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PG&E Status API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "https://pgestatus.com" }
+  ],
+  "paths": {
+    "/api/v1/status": {
+      "get": {
+        "operationId": "getPgeStatus",
+        "summary": "Check PG&E outage status for an address or place",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "minLength": 1, "maxLength": 256 },
+            "example": "Apple Park"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PG&E status for the resolved address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["address", "checkedAt", "string", "color", "status", "glyphColor"],
+                  "properties": {
+                    "address": { "type": "string" },
+                    "checkedAt": { "type": "string", "format": "date-time" },
+                    "string": { "type": "string" },
+                    "color": { "type": "string" },
+                    "status": { "type": "string", "enum": ["clear", "current", "future", "delayed"] },
+                    "glyphColor": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing or invalid location" },
+          "404": { "description": "PG&E has no status for this address" },
+          "422": { "description": "No complete California street address found" },
+          "429": { "description": "Too many requests" },
+          "502": { "description": "MapKit or PG&E service unavailable" }
+        }
+      }
+    }
+  }
+}

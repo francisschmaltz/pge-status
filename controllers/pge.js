@@ -107,16 +107,22 @@ exports.check = (req, res) => {
             if (!Array.isArray(details) || !details.length) throw new Error("Unexpected PG&E response shape");
             let outage;
             let forecast;
+            let delayedForecast;
+            const now = Date.now();
 
             for (const detail of details) {
               if (detail.current_outage && detail.current_outage.last_update) outage = detail.current_outage;
               for (const upcoming of detail.forecasted_outages || []) {
                 const start = Date.parse(upcoming.estimated_shut_off_start_dttm);
-                if (start > Date.now() && (!forecast || start < Date.parse(forecast.estimated_shut_off_start_dttm))) {
-                  forecast = upcoming;
+                if (!Number.isFinite(start)) continue;
+                if (start > now) {
+                  if (!forecast || start < Date.parse(forecast.estimated_shut_off_start_dttm)) forecast = upcoming;
+                } else if (!delayedForecast || start > Date.parse(delayedForecast.estimated_shut_off_start_dttm)) {
+                  delayedForecast = upcoming;
                 }
               }
             }
+            if (!forecast) forecast = delayedForecast;
 
             if (outage) {
               message = `Current outage: PG&E Status: ${outage.crew_current_status || "Unknown"}`;
@@ -125,13 +131,14 @@ exports.check = (req, res) => {
               glyphColor = "#1A3F24";
             }
             if (forecast) {
+              const delayed = Date.parse(forecast.estimated_shut_off_start_dttm) <= now;
               if (message) message += "\n";
               else {
                 statusColor = "#DFBA70";
-                status = "future";
+                status = delayed ? "delayed" : "future";
                 glyphColor = "#1A3F24";
               }
-              message += "Future outage";
+              message += delayed ? "Upcoming outage (delayed)" : "Upcoming outage";
               if (forecast.stage) message += `: ${forecast.stage}`;
               else if (forecast.message_template) message += `: PSPS ${forecast.message_template.replace(/(Single|Multiple)$/, "")}`;
 
@@ -140,7 +147,7 @@ exports.check = (req, res) => {
                 hour: "numeric", minute: "2-digit", timeZoneName: "short",
               });
               if (forecast.estimated_shut_off_start_dttm) {
-                message += `. Estimated shutoff: ${time.format(new Date(forecast.estimated_shut_off_start_dttm))}`;
+                message += `.${delayed ? " Scheduled" : " Estimated"} shutoff: ${time.format(new Date(forecast.estimated_shut_off_start_dttm))}`;
                 if (forecast.estimated_shutoff_end_dttm) message += ` - ${time.format(new Date(forecast.estimated_shutoff_end_dttm))}`;
               }
               if (forecast.etor) message += `. Estimated restoration: ${time.format(new Date(forecast.etor))}`;
@@ -154,11 +161,15 @@ exports.check = (req, res) => {
           }
 
           settled = true;
+          if (req.resolvedAddress && status === "error") res.status(404);
+          if (req.resolvedAddress && status !== "error") res.set("Cloudflare-CDN-Cache-Control", "public, max-age=900");
           res.set("Cache-Control", "no-store").json({
             string: message,
             color: statusColor,
             status,
             glyphColor,
+            address: req.resolvedAddress,
+            checkedAt: req.resolvedAddress ? new Date().toISOString() : undefined,
           });
         } catch (error) {
           console.error(`Unable to parse PG&E response: ${error.message}`);
