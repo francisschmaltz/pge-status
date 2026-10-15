@@ -34,4 +34,4 @@ app.use(error.notFound);
 app.use(error.serverError);
 
 // Load app
-app.listen(port, '0.0.0.0', () => console.log(`App listening on port ${port}!`))
+app.listen(port, () => console.log(`App listening on port ${port}!`))
