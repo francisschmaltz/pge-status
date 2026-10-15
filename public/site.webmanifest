@@ -1,0 +1,20 @@
+{
+  "name": "PG&E Power Outage Status",
+  "short_name": "PG&E Status",
+  "description": "PG&E Power Outage Status Map. View of live map of PG&E power outages, planned public safety power shutoffs (PSPS), and get updates of the outage status.",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}

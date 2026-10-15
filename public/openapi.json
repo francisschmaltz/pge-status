@@ -23,7 +23,7 @@
         ],
         "responses": {
           "200": {
-            "description": "PG&E status for the resolved address",
+            "description": "PG&E status for the resolved address. Responses are cached at the edge for about 15 minutes.",
             "content": {
               "application/json": {
                 "schema": {

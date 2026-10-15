@@ -30,6 +30,30 @@
             <br>
             I wish I could provide a better solution, but since this relies on PG&E it's not 100% reliable.
           </p>
+          <h3 class="typography-subsection-headline">Status API</h3>
+          <p>
+            The Status API checks PG&amp;E outage information for a place or address and returns JSON. Send a GET request to
+            <code>https://pgestatus.com/api/v1/status</code> with a required <code>location</code> query parameter. The location is resolved through Apple Maps, and the API supports California street addresses.
+          </p>
+          <br>
+          <pre><code>curl --get --data-urlencode "location=Apple Park" "https://pgestatus.com/api/v1/status"</code></pre>
+          <br>
+          <p>A successful response looks like this:</p>
+          <br>
+          <pre><code>{
+  "string": "No Outage Reported by PG&amp;E",
+  "color": "#30f27a",
+  "status": "clear",
+  "glyphColor": "#1A3F24",
+  "address": "1 Apple Park Way, Cupertino, CA 95014",
+  "checkedAt": "2026-10-15T18:23:37.527Z"
+}</code></pre>
+          <br>
+          <p>
+            The <code>status</code> field is machine-readable (<code>clear</code>, <code>current</code>, <code>future</code>, or <code>delayed</code>); <code>string</code> contains the display message. Requests are limited to 30 per minute per IP. Errors can return HTTP 400, 404, 422, 429, or 502.
+            See the <a href="/openapi.json">OpenAPI specification</a> for the response schema and error details.
+          </p>
+          <p>Responses are cached at the edge for about 15 minutes.</p>
           <br>
           <br>
           <br>
