@@ -10,7 +10,7 @@
   "paths": {
     "/api/v1/status": {
       "get": {
-        "operationId": "getPgeStatus",
+        "operationId": "getOutageStatus",
         "summary": "Check PG&E outage status for an address or place",
         "parameters": [
           {
