@@ -67,6 +67,7 @@ if (alertHeight !== -12) {
 
 var map = new mapkit.Map("map", {
   colorScheme: `${mapColor()}`,
+  isZoomEnabled: true,
   padding: new mapkit.Padding({ top: paddingTop, left: paddingLft }),
 });
 
