@@ -135,9 +135,9 @@ exports.check = (req, res) => {
                 const time = date.toLocaleTimeString("en-US", {
                   timeZone: "America/Los_Angeles", hour: "numeric", minute: "2-digit",
                 });
-                message += ` Estimated Restoration: ${day}, ${time}`;
+                message += `\nEstimated Restoration: ${day}, ${time}`;
               }
-              message += `\nCurrent Outage: ${outage.outage_cause || "Cause not reported"}`;
+              message += `\n\nOutage Reason: ${outage.outage_cause || "Cause not reported"}`;
               statusColor = "#f23050";
               status = "current";
               glyphColor = "#1A3F24";
@@ -162,7 +162,7 @@ exports.check = (req, res) => {
                 message += `.${delayed ? " Scheduled" : " Estimated"} shutoff: ${time.format(new Date(forecast.estimated_shut_off_start_dttm))}`;
                 if (forecast.estimated_shutoff_end_dttm) message += ` - ${time.format(new Date(forecast.estimated_shutoff_end_dttm))}`;
               }
-              if (forecast.etor) message += `. Estimated restoration: ${time.format(new Date(forecast.etor))}`;
+              if (forecast.etor) message += ` until ${time.format(new Date(forecast.etor))}`;
             }
             if (!message) {
               message = "No Outage Reported by PG&E";

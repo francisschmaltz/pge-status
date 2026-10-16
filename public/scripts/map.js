@@ -468,12 +468,14 @@ var searchDelegate = {
           subtitle.style.color = "#595959";
         }
         if (annotation.outageStatus === "current") {
-          const lines = annotation.subtitle.split("\n");
+          const sections = annotation.subtitle.split("\n\n");
           const headline = subtitle.appendChild(document.createElement("div"));
           headline.style.fontWeight = "500";
-          headline.textContent = lines.shift();
+          headline.style.color = prefersDark ? "#ffffff" : "#000000";
+          headline.textContent = sections.shift();
           const details = subtitle.appendChild(document.createElement("div"));
-          details.textContent = lines.join("\n");
+          details.style.marginTop = "1em";
+          details.textContent = sections.join("\n\n");
         } else {
           subtitle.textContent = annotation.subtitle;
         }
