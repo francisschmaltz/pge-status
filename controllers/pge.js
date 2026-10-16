@@ -125,7 +125,19 @@ exports.check = (req, res) => {
             if (!forecast) forecast = delayedForecast;
 
             if (outage) {
-              message = `Current outage: PG&E Status: ${outage.crew_current_status || "Unknown"}`;
+              message = "Power Outage Reported.";
+              const restoration = Date.parse(outage.current_etor);
+              if (Number.isFinite(restoration)) {
+                const date = new Date(restoration);
+                const day = date.toLocaleDateString("en-US", {
+                  timeZone: "America/Los_Angeles", month: "long", day: "numeric",
+                });
+                const time = date.toLocaleTimeString("en-US", {
+                  timeZone: "America/Los_Angeles", hour: "numeric", minute: "2-digit",
+                });
+                message += ` Estimated Restoration: ${day}, ${time}`;
+              }
+              message += `\nCurrent Outage: ${outage.outage_cause || "Cause not reported"}`;
               statusColor = "#f23050";
               status = "current";
               glyphColor = "#1A3F24";
@@ -138,7 +150,7 @@ exports.check = (req, res) => {
                 status = delayed ? "delayed" : "future";
                 glyphColor = "#1A3F24";
               }
-              message += delayed ? "Upcoming outage (delayed)" : "Upcoming outage";
+              message += delayed ? "Forecasted Outage (delayed)" : "Forecasted Outage";
               if (forecast.stage) message += `: ${forecast.stage}`;
               else if (forecast.message_template) message += `: PSPS ${forecast.message_template.replace(/(Single|Multiple)$/, "")}`;
 

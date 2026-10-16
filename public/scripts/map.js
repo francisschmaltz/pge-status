@@ -467,7 +467,16 @@ var searchDelegate = {
         } else {
           subtitle.style.color = "#595959";
         }
-        subtitle.textContent = annotation.subtitle;
+        if (annotation.outageStatus === "current") {
+          const lines = annotation.subtitle.split("\n");
+          const headline = subtitle.appendChild(document.createElement("div"));
+          headline.style.fontWeight = "500";
+          headline.textContent = lines.shift();
+          const details = subtitle.appendChild(document.createElement("div"));
+          details.textContent = lines.join("\n");
+        } else {
+          subtitle.textContent = annotation.subtitle;
+        }
         return content;
       },
       calloutLeftAccessoryForAnnotation: function (annotation) {
@@ -509,6 +518,7 @@ var searchDelegate = {
         callout: calloutDelegate,
         glyphColor: response.glyphColor
       });
+      updatedStatusPin.outageStatus = response.status;
       if (response.status === "current") {
         updatedStatusPin.icon = "images/exclamation.svg";
       } else if (response.status === "future" || response.status === "delayed") {
